@@ -26,3 +26,64 @@ header{
     border-bottom-right-radius: 10%;
 }
 
+main {
+    height: 100%;
+    padding-top: 12em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main_panel {
+    display: flex;
+    flex-direction: row;
+    height: 60%;
+    width: 50%;
+    border-radius: 2%;
+    background-color: white;
+
+}
+
+#form_panel {
+    flex-basis: 60%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+#form_panel form{
+    padding: 5%;
+    font-size: 1.3em;
+}
+
+#form_panel form input[type=text]{
+    width: 90%;
+    border: 2px solid orange;
+    border-radius: 4px; 
+}
+
+#form_panel form input[type=password]{
+    width: 90%;
+    border: 2px solid orange;
+    border-radius: 4px; 
+}
+
+#form_panel form input[type=submit]{
+    background: orange;
+    width: 30%;
+    margin-left: 7em;
+    border: 1px solid orange;
+    border-radius: 4px; 
+}
+
+#column_img {
+    flex-basis: 20%;
+}
+
+#column_img img {
+    height: 100%;
+    width: 100%;
+    border-radius: 2%;
+}
+
