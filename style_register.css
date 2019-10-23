@@ -93,3 +93,7 @@ form input[type=submit]{
   margin-left: 7em;
   border-radius: 4px; 
 }
+
+form input[type=submit]:hover{
+  cursor: pointer;
+}

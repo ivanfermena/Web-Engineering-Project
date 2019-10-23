@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style_register.css" media="screen">
+  <link rel="stylesheet" href="style_user.css" media="screen">
   <title>Tasks</title>
 </head>
 
@@ -29,21 +29,15 @@
     </ul>
   </nav>
   <main>
-    <div id="main_panel">
-      <form action="login_proccess.js" method="POST">
-        Email: <input type="text" name="user_email">
-        Password: <input type="password" name="user_password">
-        Nombre completo: <input type="text" name="user_name">
-        <div id="form_genre">
-          Sexo:
-          <input type="radio" name="user_genre" value="hombre"> Hombre
-          <input type="radio" name="user_genre" value="mujer"> Mujer
-          <input type="radio" name="user_genre" value="otro"> Otro
-        </div>
-        Fecha de nacimiento: <input type="date" name="user_birthday">
-        Imagen de perfil: <input type="file" name="user_img">
-        <input type="submit" value="Conectar">
-      </form>
+    <div class="card">
+      <img src="resources/user.png" alt="John" style="width:100%">
+      <h1>John Doe</h1>
+      <p class="title">Me gusta la escalada</p>
+      <p>Harvard University</p>
+      <i class="fa fa-dribbble">33 años</i>
+      <i class="fa fa-twitter">Hombre</i>
+      <i class="fa fa-linkedin">200pts</i>
+      <p><button>Modificar</button></p>
     </div>
   </main>
 </body>
