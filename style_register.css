@@ -1,0 +1,95 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-image: url(resources/background.png);
+  background-color: rgb(0, 60, 139);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
+}
+
+nav {
+  width: 100%;
+  background-color: rgb(255, 255, 255, 0.8);
+  padding-left: 3em;
+  padding-right: 5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: inline-block;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  margin-right: 4em;
+}
+
+.nav-item a {
+  display: inline-block;
+  padding: 1em 1em;
+  text-decoration: none;
+  color: rgb(0, 68, 255);
+}
+
+.nav-item:hover {
+  background-color: white;
+}
+
+.nav-item:hover a {
+  color: darkgreen;
+}
+
+.logo img {
+  width: 2em;
+  vertical-align: middle;
+}
+
+main {
+  margin: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#main_panel {
+  display: flex;
+  justify-content: center;
+  height: 50%;
+  width: 50%;
+  padding: 2em;
+  border-radius: 2%;
+  background-color: rgb(255, 255, 255, 0.8); 
+}
+
+main form{
+  display: flex;
+  font-size: 1.3em;
+  flex-direction: column;
+}
+
+form input{
+  margin: 0.5em;
+  border: 2px solid #ed3330;
+  border-radius: 4px; 
+}
+
+#form_genre {
+  margin: 0.2em 0em;
+}
+
+form input[type=submit]{
+  margin: 0.5em;
+  background: #ed3330;
+  width: 30%;
+  margin-left: 7em;
+  border-radius: 4px; 
+}
