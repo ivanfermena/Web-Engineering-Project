@@ -3,7 +3,7 @@
     margin: 0;
 }
 
-html, body {
+body {
     font-family: 'Nunito', sans-serif;
     background-image: url(resources/background.png);
     background-color: rgb(0, 60, 139);
@@ -55,10 +55,19 @@ html, body {
 
   main {
     height: 100%;
-    padding-top: 12em;
+    padding-top: 2em;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .panel {
+    margin: 2em;
     display: flex;
     flex-direction: column;
-    align-items: center;
+  }
+
+  .panel ul{
+    list-style-type: none;
   }
 
   .sections{
@@ -68,8 +77,10 @@ html, body {
   .friend{
     display: flex;
     flex-direction: row;
+    margin: 1em;
   }
 
+  
   .button_control {
     color: #fff !important;
     text-transform: uppercase;

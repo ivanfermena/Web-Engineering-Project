@@ -3,7 +3,7 @@
     margin: 0;
 }
 
-html, body {
+body {
     font-family: 'Nunito', sans-serif;
     background-image: url(resources/background.png);
     background-color: rgb(0, 60, 139);
@@ -55,19 +55,37 @@ html, body {
 
   main {
     height: 100%;
-    padding-top: 12em;
+    padding-top: 2em;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: center;
   }
 
+  .panel{
+    display: flex;
+    flex-direction: column;
+  }   
+
+  #left_panel p{
+    color: #ed3330;
+    margin: 1em;
+  }
   .sections{
     padding: 3em;
+  }
+
+  #friends_list ul{
+    list-style-type: none;
+  }
+
+  #friends_list li{
+    margin: 1em;
   }
 
   .friend{
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
 
   .button_control {
@@ -109,7 +127,7 @@ html, body {
       }
 
       .text-question{
-        margin-left: 2em;
+        margin-left: 1em;
         font-size: 2em;
       }
 
