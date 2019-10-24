@@ -1,0 +1,111 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    font-family: 'Nunito', sans-serif;
+    background-image: url(resources/background.png);
+    background-color: rgb(0, 60, 139);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 100%;
+}
+
+ nav {
+    width: 100%;
+    background-color: rgb(255, 255, 255, 0.8);
+    padding-left: 3em;
+    padding-right: 5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    display: inline-block;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    margin-right: 4em;
+  }
+  
+  .nav-item a {
+    display: inline-block;
+    padding: 1em 1em;
+    text-decoration: none;
+    color: rgb(0, 68, 255);
+  }
+  
+  .nav-item:hover {
+    background-color: white;
+  }
+  
+  .nav-item:hover a {
+    color: darkgreen;
+  }
+  
+  .logo img {
+    width: 2em;
+    vertical-align: middle;
+  }
+
+  main {
+    height: 100%;
+    padding-top: 12em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sections{
+    padding: 3em;
+  }
+
+  .button_control {
+    color: #fff !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: #ed3330;
+    padding: 20px;
+    border-radius: 5px;
+    display: inline-block;
+    border: none;
+    transition: all 0.4s ease 0s;
+    text-align: center;
+    margin: 1em;
+    }
+
+    .button_control:hover {
+      background: #434343;
+      letter-spacing: 1px;
+      -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+      -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+      box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+      transition: all 0.4s ease 0s;
+      }
+    
+  .list_questions{
+    margin: 2em;
+    list-style: none;
+  }
+
+  .list_questions li{
+    padding: 0.5em;
+    background-color: rgb(255, 127, 127);
+    margin: 0.5em 0;
+    border-radius: 2em;
+  }
+
+  .list_questions input{
+    margin-right: 1em;
+  }
+
+  .list_questions li a{
+    text-decoration: none;
+    color: black;
+  }
+
