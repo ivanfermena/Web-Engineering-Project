@@ -53,18 +53,24 @@ body {
     vertical-align: middle;
   }
 
+  main {
+    display: flex;
+    justify-content: center;
+  }
+
   /* Card */
 
   .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 300px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.7);
+    background-color: rgb(255, 255, 255, 0.8);
+    max-width: 290px;
     margin: 2em;
     text-align: center;
   }
   
-  .title {
-    color: grey;
-    font-size: 18px;
+  .bio {
+    color: gray;
+    font-size: 20px;
   }
   
   button {
@@ -73,7 +79,7 @@ body {
     display: inline-block;
     padding: 8px;
     color: white;
-    background-color: #000;
+    background-color: #ed3330;
     text-align: center;
     cursor: pointer;
     width: 100%;

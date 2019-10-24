@@ -54,7 +54,7 @@ body {
   }
 
 main {
-    padding: 6em;
+    padding: 4em;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -92,8 +92,14 @@ main {
 #form_panel form input[type=submit]{
     background: #ed3330;
     width: 30%;
-    margin-left: 7em;
+    height: 2em;
+    margin-top: 3em;
+    margin-left: 10em;
     border-radius: 4px; 
+}
+
+#form_panel form input[type=submit]:hover{
+  cursor: pointer;
 }
 
 #column_img {
