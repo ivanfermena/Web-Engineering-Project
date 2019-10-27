@@ -66,24 +66,27 @@ body {
     max-width: 290px;
     margin: 2em;
     text-align: center;
+    display: flex;
+    flex-direction: column;
   }
   
   .bio {
     color: gray;
-    font-size: 20px;
+    font-size: 1.5em;
   }
   
-  button {
+  .button {
     border: none;
     outline: 0;
     display: inline-block;
-    padding: 8px;
+    padding: 8px 0;
     color: white;
     background-color: #ed3330;
     text-align: center;
     cursor: pointer;
     width: 100%;
     font-size: 18px;
+    margin-top: 1em;
   }
   
   .card a {
@@ -92,7 +95,7 @@ body {
     color: black;
   }
   
-  button:hover, a:hover {
+  .button:hover, a:hover {
     opacity: 0.7;
   }
 

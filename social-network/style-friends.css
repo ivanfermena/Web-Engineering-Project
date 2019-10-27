@@ -77,10 +77,12 @@ body {
   .friend{
     display: flex;
     flex-direction: row;
-    margin: 1em;
+    padding: 1em;
+    border: 3px solid black;
+    border-radius: 5%;
   }
 
-  
+
   .button_control {
     color: #fff !important;
     text-transform: uppercase;
@@ -104,9 +106,18 @@ body {
       transition: all 0.4s ease 0s;
       }
 
+      .logo-friend {
+        font-size: 1.8em !important;
+      }
+
       .logo-friend img {
         width: 4em;
         vertical-align: middle;
+        margin-right: 2em;
+      }
+
+      .button_cont{
+        float: right;
       }
 
       .button_control{
@@ -117,5 +128,18 @@ body {
         font-size: 1.3em;
         text-decoration: none;
         color: black;
+      }
+
+      #right_panel{
+        width: 50%;
+        background-color: white;
+        border-radius: 10%;
+      }
+
+      #left_panel{
+        width: 50%;
+        background-color: white;
+        border-radius: 10%;
+        border: solid 3px black;
       }
 

@@ -80,20 +80,32 @@ form input{
   margin: 0.5em;
   border: 2px solid #ed3330;
   border-radius: 4px; 
+  padding: 0.5em;
 }
 
 #form_genre {
   margin: 0.2em 0em;
 }
 
-form input[type=submit]{
-  margin: 0.5em;
+.button_control {
+  color: #fff !important;
+  text-transform: uppercase;
+  text-decoration: none;
   background: #ed3330;
-  width: 30%;
-  margin-left: 7em;
-  border-radius: 4px; 
+  padding: 20px;
+  border-radius: 5px;
+  display: inline-block;
+  border: none;
+  transition: all 0.4s ease 0s;
+  text-align: center;
+  margin-top: 2em !important;
 }
 
-form input[type=submit]:hover{
-  cursor: pointer;
-}
+  .button_control:hover {
+    background: #434343;
+    letter-spacing: 1px;
+    -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+    box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.4s ease 0s;
+    }

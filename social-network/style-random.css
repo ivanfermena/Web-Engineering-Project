@@ -63,6 +63,7 @@ body {
 
   .sections{
     margin: 1em;
+    width: 50%;
   }
 
 
@@ -93,20 +94,26 @@ body {
       transition: all 0.4s ease 0s;
       }
     
-  .list_questions{
-    margin-top: 2em;
-    list-style: none;
-  }
-
-  .list_questions li{
-    padding: 0.5em;
-    background-color: #ed3330;
-    margin: 0.5em 0;
-    border-radius: 2em;
-  }
-
-  .list_questions li a{
-    text-decoration: none;
-    color: black;
-  }
+      .list_questions{
+        margin-bottom: 2em;
+        list-style: none;
+      }
+    
+      .list_questions li{
+        padding: 0.5em;
+        background-color: white;
+        border: solid 3px rgb(132, 132, 255);
+        margin: 0.5em 0;
+        border-radius: 2em;
+        font-size: 1.3em;
+      }
+    
+      .list_questions input{
+        margin-right: 1em;
+      }
+    
+      .list_questions li a{
+        text-decoration: none;
+        color: black;
+      }
 

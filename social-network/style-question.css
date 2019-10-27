@@ -111,9 +111,16 @@ body {
       transition: all 0.4s ease 0s;
       }
 
+      #right_panel, #left_panel{
+        background-color: white;
+        border-radius: 10%;
+        border: solid 3px black;
+      }
+
       .logo-friend img {
         width: 4em;
         vertical-align: middle;
+        margin-right: 2em;
       }
 
       .button_control{
