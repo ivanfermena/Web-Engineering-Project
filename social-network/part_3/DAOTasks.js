@@ -11,8 +11,10 @@ class DAOTasks{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT task.id as id, task.text as text, task.done as done " + 
-                "FROM task JOIN user ON user.email = task.user WHERE user.email = ?"
+                let sql = "SELECT task.id as id, task.text as text, task.done as done, tag.tag as tag " +
+                          "FROM task JOIN user ON user.email = task.user " + 
+                          "JOIN tag ON tag.taskId = task.id " + 
+                          "WHERE user.email = ?"
                 let param = [email]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
@@ -22,34 +24,21 @@ class DAOTasks{
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else {
-                        let sql_tags = "SELECT tag.tag FROM tag JOIN task ON tag.taskId = task.id " + 
-                        "WHERE task.id = ?"
                         console.log(result)
+                        anterior = result[0].id
                         result.forEach(fila => {
                             console.log(fila.id)
-                            let obj = {}
-                            obj.tags = []
-                            obj.id = fila.id
-                            obj.text = fila.text
-                            obj.done = fila.done
-                        
-                            console.log(obj)
-                            //obtiene tags 
-                            tags_aux = connection.query(sql_tags, [fila.id], function (err, result) {
+                            if(anterior != fila.id){
+                                let obj = {}
+                                obj.tags = []
+                                obj.id = fila.id
+                                obj.text = fila.text
+                                obj.done = fila.done
+                                arr.push(obj)
+                            }
                             
-                                connection.release()
-                                let arr = []
-                                if(err){
-                                    console.log(err)
-                                    callback(new Error("Error de acceso a la base de datos"))
-                                }
-                                else {
-                                    console.log(result)
-                                    return result
-                                }
-                            }).forEach(t => obj.tags.push(t))
-
-                            arr.push(obj)
+                            obj.tags.push(fila.tag)
+                            
                         });
                         callback(null, arr)
                     }
