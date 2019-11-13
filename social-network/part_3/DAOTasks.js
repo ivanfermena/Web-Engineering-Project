@@ -24,20 +24,21 @@ class DAOTasks{
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else {
-                        console.log(result)
-                        anterior = result[0].id
+                        let anterior = undefined
                         result.forEach(fila => {
-                            console.log(fila.id)
-                            if(anterior != fila.id){
+                            if(anterior !== fila.id){
                                 let obj = {}
-                                obj.tags = []
+                                anterior = fila.id
                                 obj.id = fila.id
                                 obj.text = fila.text
                                 obj.done = fila.done
+                                obj.tags = []
+                                obj.tags.push(fila.tag)
                                 arr.push(obj)
                             }
-                            
-                            obj.tags.push(fila.tag)
+                            else {
+                                arr[arr.length - 1].tags.push(fila.tag)
+                            }
                             
                         });
                         callback(null, arr)
