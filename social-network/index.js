@@ -43,6 +43,18 @@ app.get("/user", function (request, response) {
     response.render("user");
 });
 
+app.use(middlewareNotFoundError);
+app.use(middlewareServerError);
+
+function middlewareNotFoundError(request, response){
+  response.status(404);
+  response.render("404");
+}
+
+function middlewareServerError(error, request, response, next){
+  response.status(500);
+  response.end();
+}
 
 // APP Listen
 app.listen(3000, (err) => {
