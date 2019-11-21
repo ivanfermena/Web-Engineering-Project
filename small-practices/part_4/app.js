@@ -26,7 +26,7 @@ const daoTasks = new DAOTasks(pool);
 const userEmail = "gerparra@ucm.es"
 
 
-app.get("/tasks", function(request, response){
+app.get("/tasks", function(request, response, next){
     daoTasks.getAllTasks(userEmail, function (err, tasks){
         if(err){
             next(err);
@@ -39,6 +39,18 @@ app.get("/tasks", function(request, response){
     });
 })
 
+app.post("/tasks/addTask", function(request, response, next){
+    daoTasks.insertTask(userEmail, utils.createTask(request.body.task), function(err, msg){
+        if(err){
+            console.log("ranita")
+            next(err);
+        }
+        else{
+            response.status(200)
+            response.redirect("/tasks")
+        }
+    })
+})
 
 app.use(function(request, response){
     response.status(404);

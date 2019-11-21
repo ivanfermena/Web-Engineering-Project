@@ -49,8 +49,8 @@ function createTask(texto) {
         text = texto.replace(/@\w+/g, "").trim().replace(/\s+/g, ' '); //1: "Ir a @deporte      entrenar" --> "Ir a      entrenar"
         //2: "Ir a      entrenar" --> "Ir a entrenar" (quitamos espacios entre palabras en el texto).
     }
-
-    return { text, tags };
+    let done = 0;
+    return { text, tags, done};
 }
 
 module.exports = {

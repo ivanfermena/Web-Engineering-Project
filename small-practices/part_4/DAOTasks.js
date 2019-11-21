@@ -58,6 +58,7 @@ class DAOTasks{
 
                 let sqlTask = "INSERT INTO task VALUES (?,?,?,?)"
                 let paramTask = [, email, task.text, task.done]
+                console.log(paramTask)
                 connection.query(sqlTask, paramTask, function (err, result) {
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
@@ -84,7 +85,7 @@ class DAOTasks{
                                 console.log(err)
                                 callback(new Error("Error de acceso a la base de datos"))
                             }else{
-                                callback("Introduccido correctamente")
+                                callback(undefined, "Introduccido correctamente")
                             }
                         })
                     }
