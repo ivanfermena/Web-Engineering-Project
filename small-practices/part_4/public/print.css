@@ -1,0 +1,48 @@
+header, .form_insert, .reset, .tag_button {
+    display: none;
+}
+
+main{
+    font-family: Helvetica, sans-serif;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+#list_all{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tag{
+    width: 100%;
+    margin: 1em 0;
+    display: flex;
+}
+
+.tag_strike{
+    list-style-type: none;
+}
+
+.tag_text_strike{
+    text-decoration: line-through;
+    padding-left: 20px;
+}
+
+.tag_list ul{
+    display: flex;
+    list-style: none;
+}
+
+.tag_list ul li{
+    margin: 0em 1em;
+}
+
+.tag_list ul li::before {
+    content: "("
+}
+
+.tag_list ul li::after {
+    content: ")"
+}

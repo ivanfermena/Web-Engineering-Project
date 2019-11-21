@@ -1,0 +1,227 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    font-family: 'Nunito', sans-serif;
+    background-image: url(resources/background.png);
+    background-color: rgb(0, 60, 139);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 100%;
+}
+
+header{
+    height: 7em;
+    background-color: rgba(211, 211, 211, 0.8);
+    display: flex;
+    position: fixed;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 2px rgb(35, 109, 158) solid;
+    border-bottom-left-radius: 10%;
+    border-bottom-right-radius: 10%;
+}
+
+#logo_container{
+    margin: 1em 2em;
+}
+
+#logo_container img{
+    height: 100%;
+}
+
+.login_container{
+    display: flex;
+    flex-direction: row;
+    margin: 1em 2em;
+    width: 20%;
+}
+
+#login_icon{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    width: 30%; 
+}
+
+#login_icon img{
+    height: 100%;
+    border: 2px solid gray;
+    border-radius: 100%;
+}
+
+#login_info{
+    display: flex;
+    flex-direction: column;
+    text-align: center; 
+    justify-content: center;
+}
+
+#login_info a{
+    text-decoration: none;
+    color: rgb(35, 109, 158);
+    margin-bottom: .5em;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+main{
+    height: 100%;
+    padding-top: 12em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#list_all{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    list-style: none;
+}
+
+.tag{
+    width: 100%;
+    background-color: rgb(9, 102, 139);
+    margin: 1em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 4px white solid;
+    border-radius: 15%;
+    color: white;
+}
+
+.tag_text{
+    font-size: 1.5em;
+    margin: .7em;
+}
+
+.tag_list ul{
+    display: flex;
+    list-style: none;
+}
+
+.tag_list ul li{
+    padding: 0.5em;
+    border: 2px white solid;
+    border-radius: 10%;
+    background-color: rgb(110, 32, 235);
+    margin: 0 0.4em;
+}
+
+.tag_button{
+    border: 2px white solid;
+    border-radius: 10%;
+    background-color: rgb(240, 87, 113);
+    margin: .7em;
+}
+
+/*Se utiliza un input pero se espera cambiarlo por un button cuando se introduzca javascript*/
+.tag_button input {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1em;
+    padding: 0.5em;
+    color: white;
+    background: rgb(240, 87, 113);
+    border: 1px solid rgba(240, 87, 113,) !important;
+    border-radius: 10%;
+}
+
+main .tag_strike{
+    width: 100%;
+    background-color: rgba(0, 80, 112, 0.582);
+    margin: 1em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 4px rgb(35, 109, 158) solid;
+    border-radius: 15%;
+    color: rgb(23, 61, 87);
+    text-decoration: line-through;
+}
+
+.tag_text_strike{
+    font-size: 1.5em;
+    padding-left: 1.5em;
+    margin: .7em;
+}
+
+main .form_insert{
+    width: 60%;
+    background-color: rgba(0, 80, 112, 0.582);
+    margin: 1.5em 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 4px rgb(35, 109, 158) solid;
+    border-radius: 3%;
+    color: rgb(23, 61, 87);
+    text-decoration: line-through;
+}
+
+form{
+    width: 100%;
+}
+
+#input_text{
+    width: 60%;
+    height: 100%;
+    font-size: 1.2em;
+    padding: 0.3em .6em;
+    margin: 1em;
+}
+
+#input_button{
+    width: 20%;
+    height: 100%;
+    font-size: 1.2em;
+    padding: 0.3em .6em;
+    color: rgb(240, 87, 113) !important;
+    text-transform: uppercase;
+    background: #ffffff;
+    border: 3px solid rgb(240, 87, 113) !important;
+    border-radius: 0.1em;
+    transition: all 0.3s ease 0s;
+    float: right;
+    margin: 1em;
+}
+
+#input_button:hover {
+    color: #494949 !important;
+    border-radius: 50px;
+    border-color: #494949 !important;
+    transition: all 0.3s ease 0s;
+}
+
+.reset{
+    width: 30%;
+    font-size: 1.2em;
+    padding: 0.3em .6em;
+    color: rgb(35, 109, 158) !important;
+    text-transform: uppercase;
+    background: #ffffff;
+    border: 3px solid rgb(35, 109, 158) !important;
+    border-radius: 0.1em;
+    transition: all 0.3s ease 0s;
+    text-align: center;
+}
+
+.reset:hover {
+    color: #494949 !important;
+    border-radius: 50px;
+    border-color: #494949 !important;
+    transition: all 0.3s ease 0s;
+}
+
+.reset a{
+    padding: 0.5em;
+    color: rgb(35, 109, 158);
+    text-decoration: none;
+    display: inline-block;
+}
+
