@@ -106,7 +106,7 @@ class DAOTasks{
                         console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else {
-                        callback(true)
+                        callback(null)
                     }
                 })
             }

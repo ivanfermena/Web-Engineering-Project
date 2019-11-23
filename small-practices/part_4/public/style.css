@@ -153,7 +153,7 @@ main .tag_strike{
     align-items: center;
     border: 4px rgb(35, 109, 158) solid;
     border-radius: 15%;
-    color: rgb(23, 61, 87);
+    color: white;
     text-decoration: line-through;
 }
 

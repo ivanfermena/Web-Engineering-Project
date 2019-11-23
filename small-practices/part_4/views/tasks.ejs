@@ -29,21 +29,25 @@
     <main>
         <ul id="list_all">
             <% taskList.forEach(task => { %>
-                <li class="tag">
-                    <div class="tag_text"> <%=task.text %> </div>
-                    <div class="tag_list">
-                        <ul>
-                            <% task.tags.forEach(tag => { %>
-                            <li> <%=tag %></li>
-                            <% }) %>
-                        </ul>
-                    </div>
-                    <div class="tag_button">
-                        <form action="finish/" method="PATCH">
-                            <a href="<%=task.id %>">Marcar Finalizada</a>
-                        </form>
-                    </div>
-                </li>
+                <% if(task.done == 0){ %>
+                    <li class="tag">
+                        <div class="tag_text"> <%=task.text %> </div>
+                        <div class="tag_list">
+                            <ul>
+                                <% task.tags.forEach(tag => { %>
+                                <li> <%=tag %></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                        <div class="tag_button">
+                            <a href="finish/<%=task.id %>">Marcar Finalizada</a>
+                        </div>
+                    </li>
+                <% } else { %>
+                    <li class="tag_strike">
+                        <div class="tag_text_strike"><%= task.text %></div>
+                    </li>
+                <% } %>
             <% }) %>
         </ul>
 

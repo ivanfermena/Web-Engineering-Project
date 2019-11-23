@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="print.css" media="print" />
+    <link rel="stylesheet" href="style.css" media="screen">
+    <title>Tasks</title>
+</head>
+
+<body>
+    <header>
+        <div id="logo_container">
+            <img src="resources/logo-trello.png" alt="Tareas">
+        </div>
+        <div class="login_container">
+            <div id="login_icon">
+                <img src="resources/user.png" alt="Icono de usuario generico">
+            </div>
+            <div id="login_info">
+                <a href="#">usuario.generico@ucm.es</a>
+                <a href="#">DESCONECTAR</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <ul id="list_all">
+            <li class="tag">
+                <div class="tag_text">Preparar practica AW</div>
+                <div class="tag_list">
+                    <ul>
+                        <li>AW</li>
+                        <li>Practica</li>
+                    </ul>
+                </div>
+                <div class="tag_button"><input type="submit" value="Marcar finalizada"></input></div>
+            </li>
+            <li class="tag_strike">
+                <div class="tag_text_strike">Preparar practica AW</div>
+            </li>
+            <li class="tag">
+                <div class="tag_text">Ir al supermercado</div>
+                <div class="tag_list">
+                    <ul>
+                        <li>Personal</li>
+                    </ul>
+                </div>
+                <div class="tag_button"><input type="submit" value="Marcar finalizada"></input></div>
+            </li>
+            <li class="tag">
+
+                <div class="tag_text">Mudanza</div>
+                <div class="tag_list">
+                    <ul>
+                        <li>Personal</li>
+                    </ul>
+                </div>
+                <div class="tag_button"><input type="submit" value="Marcar finalizada"></input></div>
+            </li>
+        </ul>
+
+        <div class="form_insert">
+            <form action="" target="insert_tag">
+                <p>
+                    <input id="input_text" type="text" name="tag">
+                    <input id="input_button" type="submit" value="Insertar">
+                </p>
+            </form>
+        </div>
+
+        <div class="reset">
+            <div class="reset_button"><a href="">Eliminar tareas completadas</a></div>
+        </div>
+
+    </main>
+</body>
+
+</html>

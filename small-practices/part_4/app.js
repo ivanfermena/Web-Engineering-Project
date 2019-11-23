@@ -50,11 +50,11 @@ app.post("/tasks/addTask", function(request, response, next){
     })
 })
 
-app.patch("/finish/:id", function(request, response, next){
-    daoTasks.markTaskDone(request.query.id, function(err){
+app.get("/finish/:id", function(request, response, next){
+    daoTasks.markTaskDone(request.params.id, function(err){
         if(err){
             console.log("oh oh")
-            console.log(request.query.id)
+            console.log(request.params.id)
             next(err);
         }
         else {
