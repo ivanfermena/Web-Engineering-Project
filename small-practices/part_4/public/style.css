@@ -230,10 +230,12 @@ form{
     transition: all 0.3s ease 0s;
 }
 
-.reset a{
+.reset input{
     padding: 0.5em;
     color: rgb(35, 109, 158);
+    background-color: white;
     text-decoration: none;
+    border: none;
     display: inline-block;
 }
 

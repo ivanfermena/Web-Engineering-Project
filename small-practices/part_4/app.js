@@ -65,6 +65,18 @@ app.get("/finish/:id", function(request, response, next){
     })
 })
 
+app.post("/deleteCompleted", function(request, response, next){
+    daoTasks.deleteCompleted(userEmail, function(err){
+        if(err){
+            next(err)
+        }
+        else {
+            response.status(200)
+            response.redirect("/tasks")
+        }
+    })
+})
+
 app.use(function(request, response){
     response.status(404);
     response.end();
