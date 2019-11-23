@@ -38,7 +38,11 @@
                             <% }) %>
                         </ul>
                     </div>
-                    <div class="tag_button"><a href="/finish/taskId”">Marcar Finalizada</a></div>
+                    <div class="tag_button">
+                        <form action="finish/" method="PATCH">
+                            <a href="<%=task.id %>">Marcar Finalizada</a>
+                        </form>
+                    </div>
                 </li>
             <% }) %>
         </ul>

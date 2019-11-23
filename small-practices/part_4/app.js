@@ -32,7 +32,6 @@ app.get("/tasks", function(request, response, next){
             next(err);
         }
         else {
-            console.log(tasks)
             response.status(200)
             response.render("tasks", {taskList: tasks});   
         }
@@ -42,10 +41,24 @@ app.get("/tasks", function(request, response, next){
 app.post("/tasks/addTask", function(request, response, next){
     daoTasks.insertTask(userEmail, utils.createTask(request.body.task), function(err, msg){
         if(err){
-            console.log("ranita")
             next(err);
         }
         else{
+            response.status(200)
+            response.redirect("/tasks")
+        }
+    })
+})
+
+app.patch("/finish/:id", function(request, response, next){
+    daoTasks.markTaskDone(request.query.id, function(err){
+        if(err){
+            console.log("oh oh")
+            console.log(request.query.id)
+            next(err);
+        }
+        else {
+            console.log("bieeen")
             response.status(200)
             response.redirect("/tasks")
         }

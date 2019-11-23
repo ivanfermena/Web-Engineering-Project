@@ -119,7 +119,19 @@ main{
     border-radius: 10%;
     background-color: rgb(240, 87, 113);
     margin: .7em;
+    padding: .3em;
 }
+
+.tag_button a:link, a:visited {
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+.tag_button a:hover, a:active {
+    background-color: r rgb(240, 87, 113);
+  }
 
 /*Se utiliza un input pero se espera cambiarlo por un button cuando se introduzca javascript*/
 .tag_button input {

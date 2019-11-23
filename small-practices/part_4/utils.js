@@ -1,60 +1,83 @@
-//Práctica 2
-//Aplicaciones Web
-//Alejandro Cabezas Garríguez y Manuel Monforte Escobar
+/*
+//      Ejercicio 1:
+El objetivo es la implementación de un conjunto de funciones JavaScript 
+haciendo uso de las funciones de orden superior sobre arrays. 
+Todas estas funciones recibirán un array de tareas, donde cada tarea se representa mediante un objeto con tres propiedades:
+una propiedad text que contiene el texto de la tarea.
+una propiedad booleana done que indica si la tarea ha sido finalizada o no.
+una propiedad tags, que es un array que contiene las etiquetas de la tarea.
+La propiedad done es opcional y, si no se indica, se considera que tiene el valor false.
+*/
 
-"use strict";
-
-//Ejercicio 1
-function getToDoTask(tasks) {
-    if (!(tasks instanceof Array)) return [];
-    return tasks.reduce((ac, elem) => {
-        if (elem["done"] == undefined || !elem["done"]) ac.push(elem["text"]);
-        return ac;
-    }, []);
+//      Ejercicio 2:
+//Esta función devuelve un array con los textos de aquellas tareas de la lista de tareas tasks que no estén finalizadas.
+function getToDoTasks(listaTareas){
+    return listaTareas.filter(t => t.done === undefined || t.done === false)
 }
 
-//Ejercicio 2
-function findByTag(tasks, tag) {
-    if (!(tasks instanceof Array && typeof tag == "string")) return [];
-    return tasks.reduce((ac, elem) => {
-        if (elem["tags"].includes(tag)) ac.push(elem);
-        return ac;
-    }, []);
+//console.log(getToDoTasks(listaTareas))
+
+//Esta función devuelve un array que contiene las tareas del array tasks que contengan, en su lista de etiquetas, 
+//la etiqueta pasada como segundo parámetro.
+function findByTag(listaTareas, tag){
+    return listaTareas.filter(t => t.tags.includes(tag))
 }
 
-//Ejercicio 3
-function findByTags(tasks, tags) {
-    if (!(tasks instanceof Array && tags instanceof Array)) return [];
-    return tasks.reduce((ac, task) => {
-        if (tags.some(tag => task["tags"].includes(tag))) ac.push(task);
-        return ac;
-    }, []);
+//console.log(findByTag(listaTareas, "personal"))
+
+//      Ejercicio 3:
+//Esta función devuelve un array que contiene aquellas tareas del array tasks que 
+//contengan al menos una etiqueta que coincida con una de las del array tags pasado como segundo parámetro.
+function findByTags(tasks, tags){
+    /*primer paso -> para cada tag de tags, se mapea sus resultados obteniendo varios arrays, en estos arrays
+      habra duplicados. El siguiente paso en concatenar todos los arrays. El ultimo paso, reducir el array eliminando
+      los duplicados*/
+    return tags.map(tag => findByTag(tasks, tag))
+    .reduce((ac,t) => ac.concat(t), [])
+    .reduce((ac,t) => {
+        if(!(ac.includes(t))){
+            ac.push(t)
+        }
+        return ac
+    }, [])
+    
 }
 
-//Ejercicio 4
-function countDone(tasks) {
-    if (!(tasks instanceof Array)) return 0;
-    return tasks.reduce((ac, task) => {
-        if (task["done"] != undefined && task["done"]) ac++;
-        return ac;
-    }, 0);
+//console.log(findByTags(listaTareas,  ["personal", "practica"]))
+
+//      Ejercicio 3:
+//Esta función devuelve el número de tareas completadas en el array de tareas tasks pasado como parámetro.
+function countDone(tasks){
+    return tasks.reduce((ac,t) => {if(t.done){ac += 1} return ac}, 0)
 }
 
-//Ejercicio 5
-function createTask(texto) {
-    let tags = [],
-        text = "";
-    if (typeof texto != "undefined" && typeof texto == "string" && texto != "") {
-        tags = (texto.match(/@\w+/g) || []).map(tag => tag.replace("@", "")); //Queremos cualquier cadena que coincida con que empieza por arroba y va seguido de cualquier cadena de caracteres hasta llegar al espacio
-        text = texto.replace(/@\w+/g, "").trim().replace(/\s+/g, ' '); //1: "Ir a @deporte      entrenar" --> "Ir a      entrenar"
-        //2: "Ir a      entrenar" --> "Ir a entrenar" (quitamos espacios entre palabras en el texto).
-    }
-    let done = 0;
-    return { text, tags, done};
+//console.log(countDone(listaTareas))
+
+//      Ejercicio 4:
+/*Esta función recibe un texto intercalado con etiquetas, 
+cada una de ellas formada por una serie de caracteres alfanuméricos precedidos por el signo @. 
+Esta función debe devolver un objeto tarea con su array de etiquetas extraídas de la cadena texto. 
+Por otra parte, el atributo text de la tarea resultante no debe contener 
+las etiquetas de la cadena de entrada ni espacios en blanco de más.
+*/
+function createTask(texto){
+    obj = {text: texto, tags: [] }
+    obj.text = obj.text.split(" ").map(t => {
+        if (/@\w+/.exec(t) != undefined){
+            tag = t.substring(1)
+            t = " "
+            obj.tags.push(tag)
+        }
+        return t
+    }).reduce((ac, v) => ac.concat(v, " "), "")
+
+    obj.text = obj.text.replace(/\s+\S*$/, "")
+    console.log(obj)
+    return obj
 }
 
 module.exports = {
-    getToDoTask,
+    getToDoTasks,
     findByTag,
     findByTags,
     countDone,
