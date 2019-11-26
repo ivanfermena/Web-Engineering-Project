@@ -30,13 +30,29 @@
     </nav>
     <main>
       <div class="sections">
-        <h2>Busqueda con: x</h2>
-        <div class="friend">
-          <a href="https://freecodecamp.org" class="logo-friend">
-            <img src="resources/user.png" alt="freeCodeCamp logo"> Juan External
-          </a>
-          <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank" rel="nofollow noopener">Solicitar amistad</a></div>
-        </div>
+        <h2>Busqueda con: <%= query %></h2>
+        <ul>
+          <%= users.forEach(user => { %>
+          <li>
+            <div class="friend">
+              <div class="logo-friend">
+                <img src="<%= user.image %>" alt="freeCodeCamp logo"> <%= user.name %>
+              </div>
+              <div class="button_cont">
+                <form action="" method="POST">
+                  Solicitar Amistad <input type="submit" name="friendId" value="<%= user.id %>">
+                </form>
+                </a>
+              </div>
+            </div>
+          </li>
+          <% )} %>
+        </ul>
+        
+        
+
+        })
+        
         <div class="friend">
           <a href="https://freecodecamp.org" class="logo-friend">
             <img src="resources/user.png" alt="freeCodeCamp logo"> Juan External
