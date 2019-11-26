@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/ivanfermena/web-engineering#readme",
   "dependencies": {
-    "ejs": "^2.7.3",
+    "body-parser": "^1.19.0",
+    "ejs": "^2.7.4",
     "express": "^4.17.1",
     "mysql": "^2.17.1",
     "nodemon": "^2.0.1",

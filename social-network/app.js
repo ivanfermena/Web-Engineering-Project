@@ -7,7 +7,7 @@ const bodyParser = require("body-parser")
 const config = require('./config.js')
 
 const pool = mysql.createPool(config.mysqlConfig)
-const daoUser = new require('./Models/DAOUsers')
+const daoUser = new require('./models/DAOUsers')
 
 const DaoUser = new daoUser(pool)
 
@@ -24,6 +24,7 @@ app.get("/", function (request, response) {
     response.redirect("/login")
 })
 
+// LOGIN
 app.get("/login", function (request, response) {
     response.status(200)
     response.render("login")
@@ -31,8 +32,6 @@ app.get("/login", function (request, response) {
 
 //TODO comprobacion de formato email
 app.post("/login", function (request, response, next) {
-    console.log(request.body.user_email)
-    console.log(request.body.user_password)
     if (request.body.user_email != undefined && request.body.user_password != undefined) {
         let userRequested = {
             email: request.body.user_email,
@@ -60,15 +59,43 @@ app.post("/login", function (request, response, next) {
     }
 })
 
+// REGISTER
 app.get("/register", function (request, response) {
+    response.status(200)
     response.render("register");
 });
 
 app.post("/register", function(request, response, next){
-    newUser = {
-        email: request.body.email,
-        password: request.body.password
-        //TODO seguir por aqui
+    
+    if (request.body.user_email != undefined && request.body.user_password != undefined
+        && request.body.user_name != undefined && request.body.user_genre != undefined
+        && request.body.user_img != undefined && request.body.user_birthday != undefined) {
+
+        let userRequested = {
+            email: request.body.user_email,
+            password: request.body.user_password,
+            name: request.body.user_name,
+            genre: request.body.user_genre,
+            img: request.body.user_img,
+            birthday: request.body.user_birthday
+        }
+
+        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name,
+            userRequested.genre, userRequested.img, userRequested.birthday, function (err, user) {
+                if (err) {
+                    next(err)
+                }else if(user){
+                    response.status(200)
+                    response.redirect(`/user/${userRequested.email}`)
+                }else {
+                    response.status(401)
+                    response.redirect("/register")
+                }
+            })
+    }
+    else {
+        response.status(400)
+        response.end("field not filled")
     }
 })
 
@@ -83,8 +110,6 @@ app.get("/answer", function (request, response) {
 app.get("/friends", function (request, response) {
     response.render("friends")
 })
-
-
 
 app.get("/question", function (request, response) {
     response.render("question")
