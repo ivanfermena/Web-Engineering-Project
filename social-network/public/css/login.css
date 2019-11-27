@@ -1,57 +1,5 @@
-*{
-    padding: 0;
-    margin: 0;
-}
-
-body {
-    font-family: 'Nunito', sans-serif;
-    background-image: url(resources/background.png);
-    background-color: rgb(0, 60, 139);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    height: 100%;
-}
-
- nav {
-    width: 100%;
-    background-color: rgb(255, 255, 255, 0.8);
-    padding-left: 3em;
-    padding-right: 5em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
   
-  .logo {
-    display: inline-block;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    margin-right: 4em;
-  }
-  
-  .nav-item a {
-    display: inline-block;
-    padding: 1em 1em;
-    text-decoration: none;
-    color: rgb(0, 68, 255);
-  }
-  
-  .nav-item:hover {
-    background-color: white;
-  }
-  
-  .nav-item:hover a {
-    color: darkgreen;
-  }
-  
-  .logo img {
-    width: 2em;
-    vertical-align: middle;
-  }
+@import "./header.css";
 
 main {
     padding: 4em;

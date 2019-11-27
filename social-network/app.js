@@ -7,7 +7,7 @@ const bodyParser = require("body-parser")
 const config = require('./config.js')
 
 const pool = mysql.createPool(config.mysqlConfig)
-const daoUser = new require('./models/DAOUsers')
+const daoUser = new require('./models/user')
 
 const DaoUser = new daoUser(pool)
 
@@ -16,7 +16,13 @@ const app = express()
 app.set('view engine', 'ejs')
 app.set("views", path.join(__dirname, "views"))
 
-app.use(express.static(path.join(__dirname, '/public')))
+// Routers -> Controllers -> Services(Moleds) -> Database
+
+// Asi se pondrian los middlewares y despues el controler
+// app.use(require('./routers/users'))
+// app.use(require('./controllers'))
+
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.get("/", function (request, response) {
@@ -27,11 +33,11 @@ app.get("/", function (request, response) {
 // LOGIN
 app.get("/login", function (request, response) {
     response.status(200)
-    response.render("login")
+    response.render("users/login")
 })
 
 //TODO comprobacion de formato email
-app.post("/login", function (request, response, next) {
+app.post("/users/login", function (request, response, next) {
     if (request.body.user_email != undefined && request.body.user_password != undefined) {
         let userRequested = {
             email: request.body.user_email,
@@ -62,10 +68,12 @@ app.post("/login", function (request, response, next) {
 // REGISTER
 app.get("/register", function (request, response) {
     response.status(200)
-    response.render("register");
+    response.render("users/register");
 });
 
-app.post("/register", function(request, response, next){
+app.post("/users/register", function(request, response, next){
+
+    console.log("CALIPO")
     
     if (request.body.user_email != undefined && request.body.user_password != undefined
         && request.body.user_name != undefined && request.body.user_genre != undefined
@@ -87,10 +95,10 @@ app.post("/register", function(request, response, next){
                     next(err)
                 }else if(user){
                     response.status(200)
-                    response.redirect(`/user/${userRequested.email}`)
+                    response.redirect(`/users/${userRequested.email}`)
                 }else {
                     response.status(401)
-                    response.redirect("/register")
+                    response.redirect("/users/register")
                 }
             })
     }
@@ -157,7 +165,7 @@ app.post("search", function(request, response,next){
 
 app.use(function(request, response){
     response.status(404);
-    response.end();
+    response.render("general/404");
 })
 
 app.use(function (error, request, response, next) {

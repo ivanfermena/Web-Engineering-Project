@@ -77,7 +77,7 @@ class DAOUsers{
     }
 
     getUsers(name, callback){
-        this.pool.getConnection(function (err, connection) {
+        /*this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
@@ -110,7 +110,7 @@ class DAOUsers{
                     }
                 })
             }
-        })
+        })*/
     }
 }
 
