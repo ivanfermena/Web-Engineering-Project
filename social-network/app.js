@@ -4,66 +4,24 @@ const express = require('express')
 const path = require('path')
 const mysql = require('mysql')
 const bodyParser = require("body-parser")
-const config = require('./config.js')
-
-const pool = mysql.createPool(config.mysqlConfig)
-const daoUser = new require('./models/user')
-
-const DaoUser = new daoUser(pool)
 
 const app = express()
 
 app.set('view engine', 'ejs')
 app.set("views", path.join(__dirname, "views"))
 
-// Routers -> Controllers -> Services(Moleds) -> Database
-
-// Asi se pondrian los middlewares y despues el controler
-// app.use(require('./routers/users'))
-// app.use(require('./controllers'))
-
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
+// ROOT
 app.get("/", function (request, response) {
     response.status(200)
     response.redirect("/login")
 })
 
 // LOGIN
-app.get("/login", function (request, response) {
-    response.status(200)
-    response.render("users/login")
-})
-
-//TODO comprobacion de formato email
-app.post("/users/login", function (request, response, next) {
-    if (request.body.user_email != undefined && request.body.user_password != undefined) {
-        let userRequested = {
-            email: request.body.user_email,
-            password: request.body.user_password
-        }
-        DaoUser.isUserCorrect(userRequested.email,
-            userRequested.password, function (err, user) {
-                console.log(user)
-                if (err) {
-                    next(err)
-                }
-                else if(user){
-                    response.status(200)
-                    response.redirect(`/user/${userRequested.email}`)
-                }
-                else {
-                    response.status(401)
-                    response.redirect("/login")
-                }
-            })
-    }
-    else {
-        response.status(400)
-        response.end("field not filled")
-    }
-})
+const loginRouter = require("./routers/loginRouter")
+app.use("/login", loginRouter)
 
 // REGISTER
 app.get("/register", function (request, response) {

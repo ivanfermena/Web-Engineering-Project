@@ -11,11 +11,12 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT count(*) AS ret FROM user WHERE email = ? AND password = ?"
+                let sql = "SELECT count(*) AS ret FROM users WHERE email = ? AND password = ?"
                 let param = [email, password]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result[0].ret == 0){
                         callback(null, false)

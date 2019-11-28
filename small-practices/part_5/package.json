@@ -1,0 +1,28 @@
+{
+  "name": "social-network",
+  "version": "1.0.0",
+  "description": "Practice Social Network in course Web Aplication",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivanfermena/web-engineering.git"
+  },
+  "author": "Gerardo Parra e Ivan Fernandez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivanfermena/web-engineering/issues"
+  },
+  "homepage": "https://github.com/ivanfermena/web-engineering#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.7.4",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "nodemon": "^2.0.1",
+    "path": "^0.12.7"
+  }
+}
