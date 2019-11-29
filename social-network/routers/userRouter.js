@@ -4,8 +4,18 @@ const express = require('express')
 const path = require('path')
 
 const userRouter = express.Router()
-const services = require("../services/loginService")
+const services = require("../controllers/userService")
 
-userRouter.post("/login", services.isUserCorrect)
+userRouter.get("/register", function (request, response) {
+    response.status(200)
+    response.render("users/register");
+});
+
+userRouter.post("/register", services.newUser)
+
+userRouter.get("/profile", function (request, response) {
+    response.status(200)
+    response.render("users/profile");
+});
 
 module.exports = userRouter;

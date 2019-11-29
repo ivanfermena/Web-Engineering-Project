@@ -13,6 +13,27 @@ app.set("views", path.join(__dirname, "views"))
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
+// SESSION (CONFIG??)
+
+const session = require("express-session")
+const mysqlSession = require("express-mysql-session")
+const MySQLStore = mysqlSession(session)
+const sessionStore = new MySQLStore({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "tareas"  
+});
+
+const middlewareSession = session({
+    saveUninitialized: false,
+    secret: "foobar34",
+    resave: false,
+    store: sessionStore
+});
+
+app.use(middlewareSession); 
+
 // ROOT
 app.get("/", function (request, response) {
     response.status(200)
@@ -24,50 +45,13 @@ const loginRouter = require("./routers/loginRouter")
 app.use("/login", loginRouter)
 
 // REGISTER
-app.get("/register", function (request, response) {
-    response.status(200)
-    response.render("users/register");
-});
+const userRouter = require("./routers/userRouter")
+app.use("/user", userRouter)
 
-app.post("/users/register", function(request, response, next){
+// ----- TODO -----
 
-    console.log("CALIPO")
-    
-    if (request.body.user_email != undefined && request.body.user_password != undefined
-        && request.body.user_name != undefined && request.body.user_genre != undefined
-        && request.body.user_img != undefined && request.body.user_birthday != undefined) {
-
-        let userRequested = {
-            email: request.body.user_email,
-            password: request.body.user_password,
-            name: request.body.user_name,
-            genre: request.body.user_genre,
-            img: request.body.user_img,
-            birthday: request.body.user_birthday
-        }
-
-        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name,
-            userRequested.genre, userRequested.img, userRequested.birthday, 
-            function (err, user) {
-                if (err) {
-                    next(err)
-                }else if(user){
-                    response.status(200)
-                    response.redirect(`/users/${userRequested.email}`)
-                }else {
-                    response.status(401)
-                    response.redirect("/users/register")
-                }
-            })
-    }
-    else {
-        response.status(400)
-        response.end("field not filled")
-    }
-})
-
-app.get("/users:email", function (request, response) {
-    response.render("user");
+app.get("/profile", function (request, response) {
+    response.redirect("/user/profile");
 });
 
 app.get("/answer", function (request, response) {

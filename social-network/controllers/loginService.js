@@ -24,8 +24,8 @@ function isUserCorrect(request, response, next){
             }
             else if(user){
                 response.status(200)
-                // TODO session
-                response.render("users/user")
+                request.session.currentUser = userRequested.email
+                response.render("users/profile")
             }
             else {
                 response.status(401)

@@ -1,4 +1,5 @@
 "use strict";
+
 module.exports = {
    mysqlConfig: {
            host: "localhost",     // Ordenador que ejecuta el SGBD

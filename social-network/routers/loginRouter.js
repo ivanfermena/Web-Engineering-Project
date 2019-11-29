@@ -4,7 +4,7 @@ const express = require('express')
 const path = require('path')
 
 const loginRouter = express.Router()
-const services = require("../services/loginService")
+const services = require("../controllers/loginService")
 
 loginRouter.get("", function (request, response) {
     response.status(200)
