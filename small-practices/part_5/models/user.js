@@ -10,7 +10,7 @@ class DAOUsers{
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
-            }else{IHDR
+            }else{
                 let sql = "SELECT count(*) AS ret FROM user WHERE email = ? AND password = ?"
                 let param = [email, password]
                 connection.query(sql, param, function (err, result) {

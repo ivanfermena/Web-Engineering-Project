@@ -25,17 +25,17 @@ function isUserCorrect(request, response, next){
             else if(user){
                 response.status(200)
                 request.session.currentUser = userRequested.email
-                response.render("users/profile")
+                response.render("tasks")
             }
             else {
                 response.status(401)
-                response.render("login")
+                response.render("login", {errorMsg: "Not valid email or password"})
             }
         })
 
     }else{
         response.status(400)
-        response.render("login")
+        response.render("login", {errorMsg: "Field user or password not filled"})
     }
 }
 

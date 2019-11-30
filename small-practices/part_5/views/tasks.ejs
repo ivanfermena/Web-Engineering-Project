@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/task.css" media="screen">
+    <title>Tasks</title>
+</head>
+
+<body>
+    <header>
+        <div id="logo_container">
+            <img src="img/logo-trello.png" alt="Tareas">
+        </div>
+        <div class="login_container">
+            <div id="login_icon">
+                <img src="img/user.png" alt="Icono de usuario generico">
+            </div>
+            <div id="login_info">
+                <a href="#">usuario.generico@ucm.es</a>
+                <a href="#">DESCONECTAR</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <ul id="list_all">
+            <%= taskList.forEach(task => { %>
+                <% if(task.done == 0){ %>
+                    <li class="tag">
+                        <div class="tag_text"> <%=task.text %> </div>
+                        <div class="tag_list">
+                            <ul>
+                                <% task.tags.forEach(tag => { %>
+                                <li> <%=tag %></li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                        <div class="tag_button">
+                            <a href="finish/<%=task.id %>">Marcar Finalizada</a>
+                        </div>
+                    </li>
+                <% } else { %>
+                    <li class="tag_strike">
+                        <div class="tag_text_strike"><%= task.text %></div>
+                    </li>
+                <% } %>
+            <% }) %>
+        </ul>
+
+        <div class="form_insert">
+            <form action="/tasks/addTask" method="POST">
+                <p>
+                    <input id="input_text" type="text" name="task">
+                    <input id="input_button" type="submit" value="Insertar">
+                </p>
+            </form>
+        </div>
+
+        <div class="reset">
+            <div class="reset_button">
+                <form action="/deleteCompleted" method="POST">
+                    <input type="submit" value="Eliminar tareas completadas">
+                </form>
+            </div>
+        </div>
+
+    </main>
+</body>
+
+</html>
