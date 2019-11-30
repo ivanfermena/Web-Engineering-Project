@@ -4,79 +4,52 @@ const express = require('express')
 const path = require('path')
 const mysql = require('mysql')
 const bodyParser = require("body-parser")
+const session = require("express-session")
+const mysqlSession = require("express-mysql-session")
+const MySQLStore = mysqlSession(session)
+const sessionStore = new MySQLStore({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "tareas"
+});
+
+const middlewareSession = session({
+    saveUninitialized: false,
+    secret: "foobar34",
+    resave: false,
+    store: sessionStore
+});
+const loginRouter = require("./routers/loginRouter")
 
 const app = express()
 
 app.set('view engine', 'ejs')
 app.set("views", path.join(__dirname, "views"))
 
-// Routers -> Controllers -> Services(Moleds) -> Database
-
-// Asi se pondrian los middlewares y despues el controler
-// app.use(require('./routers/users'))
-// app.use(require('./controllers'))
-
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(middlewareSession)
+
+app.use(flashMiddleware)
+
+app.use("/login", loginRouter)
 
 app.get("/", function (request, response) {
     response.status(200)
     response.redirect("/login")
 })
 
-//const userRouter = require("./routers/userRouter")
-const loginRouter = require("./routers/loginRouter")
-//app.use("/user", userRouter)
-app.use("/login", loginRouter)
-
-
-// LOGIN
-/*
-app.get("/login", function (request, response) {
-    response.status(200)
-    response.render("users/login")
-})
-*/
-
-//TODO comprobacion de formato email
-/*app.post("/users/login", function (request, response, next) {
-    if (request.body.user_email != undefined && request.body.user_password != undefined) {
-        let userRequested = {
-            email: request.body.user_email,
-            password: request.body.user_password
-        }
-        DaoUser.isUserCorrect(userRequested.email,
-            userRequested.password, function (err, user) {
-                console.log(user)
-                if (err) {
-                    next(err)
-                }
-                else if(user){
-                    response.status(200)
-                    response.redirect(`/user/${userRequested.email}`)
-                }
-                else {
-                    response.status(401)
-                    response.redirect("/login")
-                }
-            })
-    }
-    else {
-        response.status(400)
-        response.end("field not filled")
-    }
-})*/
-
-// REGISTER
 app.get("/register", function (request, response) {
     response.status(200)
     response.render("users/register");
 });
 
-app.post("/users/register", function(request, response, next){
+app.post("/users/register", function (request, response, next) {
 
     console.log("CALIPO")
-    
+
     if (request.body.user_email != undefined && request.body.user_password != undefined
         && request.body.user_name != undefined && request.body.user_genre != undefined
         && request.body.user_img != undefined && request.body.user_birthday != undefined) {
@@ -91,14 +64,14 @@ app.post("/users/register", function(request, response, next){
         }
 
         DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name,
-            userRequested.genre, userRequested.img, userRequested.birthday, 
+            userRequested.genre, userRequested.img, userRequested.birthday,
             function (err, user) {
                 if (err) {
                     next(err)
-                }else if(user){
+                } else if (user) {
                     response.status(200)
                     response.redirect(`/users/${userRequested.email}`)
-                }else {
+                } else {
                     response.status(401)
                     response.redirect("/users/register")
                 }
@@ -110,62 +83,8 @@ app.post("/users/register", function(request, response, next){
     }
 })
 
-app.get("/users:email", function (request, response) {
-    response.render("user");
-});
 
-app.get("/answer", function (request, response) {
-    response.render("answer")
-})
-
-app.get("/friends", function (request, response) {
-    response.render("friends")
-})
-
-app.get("/question", function (request, response) {
-    response.render("question")
-})
-
-app.get("/random", function (request, response) {
-    response.render("random");
-});
-
-
-app.get("users/search", function (request, response) {
-    if (request.query.name != undefined){
-        let name = request.query.name
-        DaoUser.getUsers(name,function(err, users){
-            if(err){
-                next(err)
-            }
-            else{
-                users = users.map(user => {
-                    return {
-                        id: user.id,
-                        name: user.name,
-                        image: user.image
-                    }
-                })
-                response.status(200)
-                response.render("search", {query: name, users: users})
-            }
-        })
-    }
-    
-});
-
-app.post("search", function(request, response,next){
-    if (request.body.friendId != undefined){
-        let friend = request.body.friendId
-        DaoUser.createFriendshipRequest(userId, friend)
-    }
-    else {
-        response.status(400)
-        response.end("Field friendId not found")
-    }
-})
-
-app.use(function(request, response){
+app.use(function (request, response) {
     response.status(404);
     response.render("general/404");
 })
@@ -182,3 +101,12 @@ app.listen(3000, (err) => {
     if (err) console.log(err);
     else console.log("Server listen: localhost:3000");
 })
+
+
+function flashMiddleware(request, response, next) {
+    response.setFlash = function (msg) { request.session.flashMsg = msg; }; 
+    response.locals.getAndClearFlash = function () {
+        let msg = request.session.flashMsg; delete request.session.flashMsg; return msg;
+    }; 
+    next();
+};
