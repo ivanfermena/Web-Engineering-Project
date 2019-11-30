@@ -77,6 +77,27 @@ class DAOUsers{
         })
     }
 
+    getUser(email, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+                let sql = "SELECT * FROM users WHERE email = ?"
+                let param = [email]
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }else if(result){
+                        callback(null, result)
+                    }else{
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
     getUsers(name, callback){
         /*this.pool.getConnection(function (err, connection) {
             if (err) {

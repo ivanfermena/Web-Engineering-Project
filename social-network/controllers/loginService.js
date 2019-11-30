@@ -25,7 +25,7 @@ function isUserCorrect(request, response, next){
             else if(user){
                 response.status(200)
                 request.session.currentUser = userRequested.email
-                response.render("users/profile")
+                response.redirect("user/profile")
             }
             else {
                 response.status(401)
