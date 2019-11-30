@@ -30,7 +30,7 @@ function isUserCorrect(request, response, next){
             else if(user){
                 response.status(200)
                 request.session.currentUser = userRequested.email
-                response.render("tasks")
+                response.redirect("/tasks")
             }
             else {
                 response.status(401)
