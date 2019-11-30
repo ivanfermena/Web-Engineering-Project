@@ -13,9 +13,6 @@ userRouter.get("/register", function (request, response) {
 
 userRouter.post("/register", services.newUser)
 
-userRouter.get("/profile", function (request, response) {
-    response.status(200)
-    response.render("users/profile");
-});
+userRouter.get("/profile", services.getUser);
 
 module.exports = userRouter;

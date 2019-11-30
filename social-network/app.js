@@ -50,10 +50,6 @@ app.use("/user", userRouter)
 
 // ----- TODO -----
 
-app.get("/profile", function (request, response) {
-    response.redirect("/user/profile");
-});
-
 app.get("/answer", function (request, response) {
     response.render("answer")
 })

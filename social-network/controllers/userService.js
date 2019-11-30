@@ -23,14 +23,14 @@ function newUser(request, response, next){
             birthday: request.body.user_birthday
         }
 
-        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name,userRequested.genre, userRequested.img, userRequested.birthday, 
+        DaoUser.newUser(user_email, userRequested.password, userRequested.name,userRequested.genre, userRequested.img, userRequested.birthday, 
             function (err, user) {
                 if (err) {
                     next(err)
                 }else if(user){
                     response.status(200)
-                    request.session.currentUser = userRequested.email
-                    response.redirect(`/users/profile`)
+                    request.session.currentUser = user_email
+                    response.redirect(`/user/profile`)
                 }else {
                     response.status(401)
                     response.redirect("/users/register")
@@ -43,6 +43,35 @@ function newUser(request, response, next){
     }
 }
 
+function getUser(request, response, next) {
+    
+    if (request.session.currentUser != undefined){
+
+        let user_email = request.session.currentUser
+
+        DaoUser.getUser(user_email,
+            function (err, user) {
+                if (err) {
+                    next(err)
+                }else if(user){
+                    response.status(200)
+                    request.session.currentUser = user_email
+                    response.render(`users/profile`, {userInfo: user[0]})
+                }else {
+                    response.status(401)
+                    response.render("/login")
+                }
+            })
+
+    }
+    else {
+        response.status(400)
+        response.redirect("/login")
+    }
+
+}
+
 module.exports = {
-    newUser: newUser
+    newUser: newUser,
+    getUser: getUser
 };
