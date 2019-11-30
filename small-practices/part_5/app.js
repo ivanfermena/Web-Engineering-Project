@@ -41,7 +41,7 @@ app.get("/", function (request, response) {
     response.redirect("/login")
 })
 
-app.post("/logout", function(request, response){
+app.get("/logout", function(request, response){
     request.session.destroy(function(err){
         if(err){
             next(err)
