@@ -6,10 +6,7 @@ const path = require('path')
 const loginRouter = express.Router()
 const loginController = require("../controllers/loginController")
 
-loginRouter.get("", function (request, response) {
-    response.status(200)
-    response.render("login", {errorMsg: null});
-});
+loginRouter.get("", loginController.getPage);
 
 loginRouter.post("", loginController.isUserCorrect)
 

@@ -22,7 +22,7 @@ const middlewareSession = session({
 });
 
 const loginRouter = require("./routers/loginRouter")
-
+const taskRouter = require("./routers/taskRouter")
 const app = express()
 
 app.set('view engine', 'ejs')
@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(middlewareSession)
 
 app.use("/login", loginRouter)
+app.use("/tasks", taskRouter)
 
 app.get("/", function (request, response) {
     response.status(200)

@@ -3,19 +3,20 @@
 const mysql = require('mysql')
 
 const config = require('../config.js')
-const daoTask = new require('./../models/task')
+const daoTask = require('./../models/task')
 
 const pool = mysql.createPool(config.mysqlConfig)
 
-const daoTask = new daoTask(pool)
+const DaoTask = new daoTask(pool)
 
 
 function getAllTasks(request, response, next){
-    daoTasks.getAllTasks(userEmail, function (err, tasks){
+    DaoTask.getAllTasks(request.session.currentUser, function (err, tasks){
         if(err){
             next(err);
         }
         else {
+            console.log(tasks)
             response.status(200)
             response.render("tasks", {taskList: tasks});   
         }
@@ -23,7 +24,7 @@ function getAllTasks(request, response, next){
 }
 
 function addTask(request, response, next){
-    daoTasks.insertTask(userEmail, utils.createTask(request.body.task), function(err, msg){
+    DaoTask.insertTask(userEmail, utils.createTask(request.body.task), function(err, msg){
         if(err){
             next(err);
         }
@@ -35,7 +36,7 @@ function addTask(request, response, next){
 }
 
 function finishTask(request, response, next){
-    daoTasks.markTaskDone(request.params.id, function(err){
+    DaoTask.markTaskDone(request.params.id, function(err){
         if(err){
             console.log(request.params.id)
             next(err);
@@ -48,7 +49,7 @@ function finishTask(request, response, next){
 }
 
 function deleteCompleted(request, response, next){
-    daoTasks.deleteCompleted(userEmail, function(err){
+    DaoTask.deleteCompleted(request.session.currentUser, function(err){
         if(err){
             next(err)
         }

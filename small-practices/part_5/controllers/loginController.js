@@ -9,6 +9,11 @@ const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoUser = new daoUser(pool)
 
+function getPage(request, response) {
+    response.status(200)
+    response.render("login", {errorMsg: null});
+}
+
 function isUserCorrect(request, response, next){
 
     if (request.body.user_email != undefined && request.body.user_password != undefined) {
@@ -40,5 +45,6 @@ function isUserCorrect(request, response, next){
 }
 
 module.exports = {
+    getPage: getPage,
     isUserCorrect: isUserCorrect
 };
