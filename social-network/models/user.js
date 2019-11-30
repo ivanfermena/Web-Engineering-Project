@@ -30,47 +30,23 @@ class DAOUsers{
         })
     }   
 
-    newUser(email, password, name, genre, img, birthday, callback){
+    newUser(email, password, name, genre, image, birthday, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
                 let sql = "INSERT INTO users (userId, email, password, name, genre, birthday, image) VALUES (NULL, ?, ?, ?, ?, ?, ?)"
-                let param = [email, password, name, genre, birthday, img]
+                let param = [email, password, name, genre, birthday, image]
                 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
                         callback(null, result.insertId)
                     }else{
                         callback(new Error("Base de datos no consistente"))
-                    }
-                })
-            }
-        })
-    }   
-
-    getUserImageName(email, callback){
-        this.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
-            }else{
-                let sql = "SELECT * FROM user WHERE email = ?"
-                let param = [email]
-                connection.query(sql, param, function (err, result) {
-                    connection.release()
-                    if(err){
-                        callback(new Error("Error de acceso a la base de datos"))
-                    }
-                    else{
-                        console.log(result)
-                        if(result.length == 0){
-                            callback(new Error("No existe el usuario"))
-                        }else{
-                            callback(null, result[0].img)
-                        }
                     }
                 })
             }

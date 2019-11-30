@@ -19,17 +19,23 @@ function newUser(request, response, next){
             password: request.body.user_password,
             name: request.body.user_name,
             genre: request.body.user_genre,
-            img: request.body.user_img,
-            birthday: request.body.user_birthday
+            birthday: request.body.user_birthday,
+            image: null
         }
 
-        DaoUser.newUser(user_email, userRequested.password, userRequested.name,userRequested.genre, userRequested.img, userRequested.birthday, 
+        console.log(request.file)
+
+        if (request.file) {        
+            userRequested.image = request.file.buffer  
+        }
+
+        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.imagen, userRequested.birthday, 
             function (err, user) {
                 if (err) {
                     next(err)
                 }else if(user){
                     response.status(200)
-                    request.session.currentUser = user_email
+                    request.session.currentUser = userRequested.email
                     response.redirect(`/user/profile`)
                 }else {
                     response.status(401)
