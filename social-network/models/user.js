@@ -16,7 +16,6 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result[0].ret == 0){
                         callback(null, false)
@@ -37,14 +36,35 @@ class DAOUsers{
             }else{
                 let sql = "INSERT INTO users (userId, email, password, name, genre, birthday, image) VALUES (NULL, ?, ?, ?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
-                
+
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
                         callback(null, result.insertId)
+                    }else{
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
+    modifyUser(email, password, name, genre, image, birthday, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+                let sql = "UPDATE users SET email = ?, password = ?, name = ?, genre = ?, birthday = ?, image = ? where email = ?"
+                let param = [email, password, name, genre, birthday, image, email]
+
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }else if(result.affectedRows > 0){
+                        callback(null, true)
                     }else{
                         callback(new Error("Base de datos no consistente"))
                     }

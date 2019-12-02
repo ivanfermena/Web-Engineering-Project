@@ -12,7 +12,7 @@ const DaoUser = new daoUser(pool)
 function newUser(request, response, next){
 
     if (request.body.user_email != undefined && request.body.user_password != undefined && request.body.user_name != undefined && 
-        request.body.user_genre != undefined && request.body.user_img != undefined && request.body.user_birthday != undefined) {
+        request.body.user_genre != undefined && request.body.user_birthday != undefined) {
 
         let userRequested = {
             email: request.body.user_email,
@@ -23,13 +23,11 @@ function newUser(request, response, next){
             image: null
         }
 
-        console.log(request.file)
-
         if (request.file) {        
-            userRequested.image = request.file.buffer  
+            userRequested.image = request.file.buffer
         }
 
-        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.imagen, userRequested.birthday, 
+        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday, 
             function (err, user) {
                 if (err) {
                     next(err)
@@ -77,7 +75,54 @@ function getUser(request, response, next) {
 
 }
 
+function modifyUser(request, response, next){
+
+    if (request.body.user_email != undefined && request.body.user_password != undefined && request.body.user_name != undefined && 
+        request.body.user_genre != undefined && request.body.user_birthday != undefined) {
+
+        let userRequested = {
+            email: request.body.user_email,
+            password: request.body.user_password,
+            name: request.body.user_name,
+            genre: request.body.user_genre,
+            birthday: request.body.user_birthday,
+            image: null
+        }
+
+        if (request.file) {        
+            userRequested.image = request.file.buffer
+        }
+
+        DaoUser.modifyUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday, 
+            function (err, user) {
+                console.log(user)
+                if (err) {
+                    next(err)
+                }else if(user){
+                    response.status(200)
+                    request.session.currentUser = userRequested.email
+                    response.redirect(`/user/profile`)
+                }else {
+                    response.status(401)
+                    response.redirect("/user/modify")
+                }
+            })
+    }
+    else {
+        response.status(400)
+        response.redirect("/users/register")
+    }
+}
+
+function signout(request, response, next){
+    response.status(200)
+    request.session.destroy()
+    response.redirect(`/login`)
+}
+
 module.exports = {
     newUser: newUser,
-    getUser: getUser
+    getUser: getUser,
+    modifyUser: modifyUser,
+    signout: signout
 };

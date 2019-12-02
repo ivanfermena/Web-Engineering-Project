@@ -2,10 +2,9 @@
 
 const express = require('express')
 const path = require('path')
-const multer = require("multer");
 
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
+const multer = require("multer");
+const multerFactory = multer({ storage: multer.memoryStorage() });
 
 const userRouter = express.Router()
 const services = require("../controllers/userService")
@@ -15,12 +14,18 @@ userRouter.get("/register", function (request, response) {
     response.render("users/register");
 });
 
-//userRouter.post("/register",upload.single("user_img"), services.newUser)
+userRouter.post("/register", multerFactory.single("user_img"), services.newUser)
 
-userRouter.post('/register', upload.single('user_img'),  function(req, res) {
-    console.log("Hola!!", req.files);
-  });
+userRouter.get("/modify", function (request, response) {
+    response.status(200)
+    response.render("users/modify");
+});
+
+userRouter.post("/modify", multerFactory.single("user_img"), services.modifyUser)
 
 userRouter.get("/profile", services.getUser);
+
+userRouter.get("/signout", services.signout);
+
 
 module.exports = userRouter;
