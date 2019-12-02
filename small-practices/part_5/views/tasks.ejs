@@ -39,7 +39,7 @@
                             </ul>
                         </div>
                         <div class="tag_button">
-                            <a href="finish/<%=task.id %>">Marcar Finalizada</a>
+                            <a href="tasks/finish/<%=task.id %>">Marcar Finalizada</a>
                         </div>
                     </li>
                 <% } else { %>
@@ -61,7 +61,7 @@
 
         <div class="reset">
             <div class="reset_button">
-                <form action="/deleteCompleted" method="POST">
+                <form action="tasks/deleteCompleted" method="POST">
                     <input type="submit" value="Eliminar tareas completadas">
                 </form>
             </div>

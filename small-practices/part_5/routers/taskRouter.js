@@ -11,7 +11,6 @@ taskRouter.get("", taskController.getAllTasks)
 taskRouter.post("/addTask", taskController.addTask)
 
 taskRouter.get("/finish/:id", taskController.finishTask)
-
 taskRouter.post("/deleteCompleted", taskController.deleteCompleted)
 
 module.exports = taskRouter

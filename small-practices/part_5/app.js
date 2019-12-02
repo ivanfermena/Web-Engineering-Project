@@ -33,7 +33,18 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(middlewareSession)
 
+
+
 app.use("/login", loginRouter)
+
+app.use("", function (request, response, next){
+    if(request.session.currentUser === undefined){
+        response.render("login", {errorMsg: null})
+    }
+    response.locals.userEmail = request.session.currentUser
+    next()
+})
+
 app.use("/tasks", taskRouter)
 
 app.get("/", function (request, response) {
@@ -69,3 +80,5 @@ app.listen(3000, (err) => {
     if (err) console.log(err);
     else console.log("Server listen: localhost:3000");
 })
+
+
