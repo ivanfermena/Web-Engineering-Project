@@ -54,10 +54,6 @@ app.get("/answer", function (request, response) {
     response.render("answer")
 })
 
-app.get("/friends", function (request, response) {
-    response.render("friends")
-})
-
 app.get("/question", function (request, response) {
     response.render("question")
 })
@@ -65,41 +61,6 @@ app.get("/question", function (request, response) {
 app.get("/random", function (request, response) {
     response.render("random");
 });
-
-
-app.get("users/search", function (request, response) {
-    if (request.query.name != undefined){
-        let name = request.query.name
-        DaoUser.getUsers(name,function(err, users){
-            if(err){
-                next(err)
-            }
-            else{
-                users = users.map(user => {
-                    return {
-                        id: user.id,
-                        name: user.name,
-                        image: user.image
-                    }
-                })
-                response.status(200)
-                response.render("search", {query: name, users: users})
-            }
-        })
-    }
-    
-});
-
-app.post("search", function(request, response,next){
-    if (request.body.friendId != undefined){
-        let friend = request.body.friendId
-        DaoUser.createFriendshipRequest(userId, friend)
-    }
-    else {
-        response.status(400)
-        response.end("Field friendId not found")
-    }
-})
 
 app.use(function(request, response){
     response.status(404);

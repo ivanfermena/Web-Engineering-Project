@@ -37,28 +37,22 @@
     <div class="panel" id="right_panel">
       <div class="sections" id="users_search">
         <h2>Amigos</h2>
-        <form action="">
-          Buscar por nombre: <input type="text">
-          <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank"
-              rel="nofollow noopener">Buscar</a></div>
+        <form action="search" method="POST">
+          Buscar por nombre: <input type="text" name="name_search">
+          <input type="submit" value="Buscar" class="button_control">
         </form>
+
         <div class="sections" id="users_list">
             <h2>Busqueda de amigos</h2>
             <ul>
+              <% usersList.forEach(user => { %>
               <li>
                 <div class="friend">
                   <a href="https://freecodecamp.org" class="logo-friend">
-                    <img src="resources/user.png" alt="freeCodeCamp logo"> Juan
+                    <img src="resources/user.png" alt="freeCodeCamp logo"> <%= user.name %>
                   </a>
                 </div>
-
-              </li>
-              <li>
-                <div class="friend">
-                  <a href="https://freecodecamp.org" class="logo-friend">
-                    <img src="resources/user.png" alt="freeCodeCamp logo"> Juan
-                  </a>
-                </div>
+                <% }) %>
               </li>
             </ul>
           </div>
