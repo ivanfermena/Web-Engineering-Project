@@ -13,11 +13,11 @@
   
   <body>
     
-    <%- include("./../general/nav_login") %>
+    <%- include("./../general/nav") %>
 
     <main>
       <div id="main_panel">
-        <form action="/user/register" method="POST" enctype="multipart/form-data">
+        <form action="/user/modify" method="POST" enctype="multipart/form-data">
           Email: <input type="text" name="user_email">
           Password: <input type="password" name="user_password">
           Nombre completo: <input type="text" name="user_name">
