@@ -33,24 +33,26 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(middlewareSession)
 
-
-
-app.use("/login", loginRouter)
-
-app.use("", function (request, response, next){
-    if(request.session.currentUser === undefined){
-        response.render("login", {errorMsg: null})
-    }
-    response.locals.userEmail = request.session.currentUser
-    next()
-})
-
-app.use("/tasks", taskRouter)
-
 app.get("/", function (request, response) {
     response.status(200)
     response.redirect("/login")
 })
+
+app.use("/login", loginRouter)
+
+app.use(function (request, response, next){
+    if(request.session.currentUser === undefined){
+        response.render("login", {errorMsg: null})
+    }
+
+    else {
+    response.locals.userEmail = request.session.currentUser
+    next()
+    }
+})
+
+app.use("/tasks", taskRouter)
+
 
 app.get("/logout", function(request, response){
     request.session.destroy(function(err){
