@@ -11,14 +11,13 @@
 </head>
 
 <body>
-  <%- include("./general/nav") %>
   <main>
     <div id="main_panel">
       <div id="column_img">
         <img src="/img/login_column_img.jpg">
       </div>
-      <%- include("./flash") %>
       <div id="form_panel">
+        <%- include("./flash") %>
         <form action="" method="POST">
           Email: <input type="text" name="user_email">
           Password: <input type="password" name="user_password">

@@ -56,7 +56,7 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM user WHERE email = ?"
+                let sql = "SELECT img FROM user WHERE email = ?"
                 let param = [email]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
@@ -64,9 +64,10 @@ class DAOUsers{
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
-                        console.log(result)
-                        if(result.length == 0){
-                            callback(new Error("No existe el usuario"))
+                        console.log("reccc")
+                        console.log(result[0].img)
+                        if(result[0].img == ''){
+                            callback(null, null)
                         }else{
                             callback(null, result[0].img)
                         }

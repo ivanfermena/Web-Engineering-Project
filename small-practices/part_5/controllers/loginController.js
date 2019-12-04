@@ -11,14 +11,14 @@ const DaoUser = new daoUser(pool)
 
 function getPage(request, response) {
     response.status(200)
-    response.render("login", { errorMsg: null });
+    response.render("login")
 }
 
 function isUserCorrect(request, response, next) {
-    if (request.body.user_email === undefined || request.body.user_password === undefined) {
-        console.log("jiji")
+    if (request.body.user_email == '' || request.body.user_password == '') {
         response.status(400)
-        response.render("login", { errorMsg: "Field user or password not filled" })
+        response.setFlash("Email or password fields not filled")
+        response.redirect("/login")
     }
 
     let userRequested = {
@@ -27,6 +27,7 @@ function isUserCorrect(request, response, next) {
     }
 
     DaoUser.isUserCorrect(userRequested.email, userRequested.password, function (err, user) {
+        console.log(user)
         if (err) {
             next(err)
         }
@@ -37,7 +38,8 @@ function isUserCorrect(request, response, next) {
         }
         else {
             response.status(401)
-            response.render("login", { errorMsg: "Not valid email or password" })
+            response.setFlash("Not valid email or password")
+            response.redirect("/login")
         }
     })
 

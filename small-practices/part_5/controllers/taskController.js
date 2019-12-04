@@ -14,7 +14,8 @@ const DaoTask = new daoTask(pool)
 function getAllTasks(request, response, next){
     if(response.locals.userEmail === undefined){
         response.status(401)
-        response.render("login", {errorMsg: "Forbidden access, user not identified"})
+        response.setFlash("Forbidden access, user not identified")
+        response.redirect("/login")
     }
 
     DaoTask.getAllTasks(response.locals.userEmail, function (err, tasks){
@@ -24,7 +25,7 @@ function getAllTasks(request, response, next){
         else {
             console.log(tasks)
             response.status(200)
-            response.render("tasks", {taskList: tasks});   
+            response.render("tasks", {taskList: tasks, userEmail: response.locals.userEmail});   
         }
     })
 }
@@ -32,7 +33,8 @@ function getAllTasks(request, response, next){
 function addTask(request, response, next){
     if(response.locals.userEmail === undefined){
         response.status(401)
-        response.render("login", {errorMsg: "Forbidden access, user not identified"})
+        response.setFlash("Forbidden access, user not identified")
+        response.redirect("/login")
     }
 
     DaoTask.insertTask(response.locals.userEmail, utils.createTask(request.body.task), function(err, msg){
@@ -49,7 +51,8 @@ function addTask(request, response, next){
 function finishTask(request, response, next){
     if(response.locals.userEmail === undefined){
         response.status(401)
-        response.render("login", {errorMsg: "Forbidden access, user not identified"})
+        response.setFlash("Forbidden access, user not identified")
+        response.redirect("/login")
     }
     
     DaoTask.markTaskDone(request.params.id, function(err){
@@ -69,7 +72,8 @@ function deleteCompleted(request, response, next){
 
     if(response.locals.userEmail === undefined){
         response.status(401)
-        response.render("login", {errorMsg: "Forbidden access, user not identified"})
+        response.setFlash("Forbidden access, user not identified")
+        response.redirect("/login")
     }
 
     DaoTask.deleteCompleted(response.locals.userEmail, function(err){

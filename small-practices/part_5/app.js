@@ -23,6 +23,7 @@ const middlewareSession = session({
 
 const loginRouter = require("./routers/loginRouter")
 const taskRouter = require("./routers/taskRouter")
+const userRouter = require("./routers/userRouter")
 const app = express()
 
 app.set('view engine', 'ejs')
@@ -32,6 +33,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(middlewareSession)
+app.use(flashMiddleware)
 
 app.get("/", function (request, response) {
     response.status(200)
@@ -40,29 +42,32 @@ app.get("/", function (request, response) {
 
 app.use("/login", loginRouter)
 
-app.use(function (request, response, next){
-    if(request.session.currentUser === undefined){
-        response.render("login", {errorMsg: null})
+app.use(function (request, response, next) {
+    if (request.session.currentUser === undefined) {
+        response.status(401)
+        response.setFlash("Forbidden access, please login")
+        response.redirect("/login")
     }
 
     else {
-    response.locals.userEmail = request.session.currentUser
-    next()
+        response.locals.userEmail = request.session.currentUser
+        next()
     }
 })
 
 app.use("/tasks", taskRouter)
 
+app.use("/imagenUsuario", userRouter)
 
-app.get("/logout", function(request, response){
-    request.session.destroy(function(err){
-        if(err){
+app.get("/logout", function (request, response) {
+    request.session.destroy(function (err) {
+        if (err) {
             next(err)
         }
-        else{
+        else {
             response.redirect("/")
         }
-    })    
+    })
 })
 
 app.use(function (request, response) {
@@ -74,7 +79,7 @@ app.use(function (error, request, response, next) {
     // Código 500: Internal server error   
     console.log(error)
     response.status(500);
-    response.render("login", {errorMsg: "algo ha fallado"});
+    response.render("login", { errorMsg: "algo ha fallado" });
 })
 
 // APP Listen
@@ -83,4 +88,20 @@ app.listen(3000, (err) => {
     else console.log("Server listen: localhost:3000");
 })
 
-
+function flashMiddleware(request, response, next) {
+    response.setFlash = function (msg) {
+        request.session.flashMsg = msg;
+    };
+    response.locals.getAndClearFlash = function () {
+        if (request.session.flashMsg === undefined){
+            return null
+        }
+        else{
+            let msg = request.session.flashMsg
+            delete request.session.flashMsg
+            return msg
+        }
+        
+    }
+    next()
+}
