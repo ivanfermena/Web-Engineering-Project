@@ -17,9 +17,9 @@ class DAOUsers{
                     connection.release()
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
-                    }else if(result != undefined){
+                    }else if(result.length >= 1){
                         callback(null, result[0].userId)
-                    }else if(result != undefined){
+                    }else if(result.length == 0){
                         callback(null, -1)
                     }else{
                         callback(new Error("Base de datos no consistente"))
@@ -42,10 +42,135 @@ class DAOUsers{
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
-                        console.log(result.insertId)
                         callback(null, result.insertId)
                     }else{
                         callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
+    getFriendsRequest(userId, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+
+                let sql = "SELECT * FROM users WHERE userId IN (SELECT userRequester FROM friendshiprequests where userRequested = ?)"
+                let param = [userId]
+
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }
+                    else{
+                        let requestFriendsList = []
+                        if(result.length == 0){
+                            callback(null, requestFriendsList)
+                        }else{
+                            result.forEach(user => {
+                                requestFriendsList.push({
+                                    id: user.userId,
+                                    email: user.email,
+                                    password: user.password,
+                                    name: user.name,
+                                    genre: user.genre,
+                                    birthday: user.birthday,
+                                    image: user.image
+                                })
+                            })
+                            callback(null, requestFriendsList)
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    newRequestFriend(userId, userRequester, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+
+                let sql = "INSERT INTO friendshiprequests (userRequester, userRequested) VALUES (?, ?)"
+                let param = [userId, userRequester]
+
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        console.log(err)
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }else if(result.affectedRows > 0){
+                        callback(null, true)
+                    }else{
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
+    deniedFriendsRequest(userId, userRequester, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+
+                let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
+                let param = [userRequester, userId]
+
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }else if(result.affectedRows > 0){
+                        callback(null, true)
+                    }else{
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
+    acceptFriendsRequest(userId, userRequester, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+
+                let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
+                let param = [userRequester, userId]
+
+                connection.query(sql, param, function (err, result) {
+
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }
+                    else{
+                        if(result.affectedRows == 0){
+                            callback(new Error("No existe el usuario"))
+                        }else{
+                            
+                            let sqlInsert = "INSERT INTO friendships (userId, friendId) VALUES (?, ?),(?, ?)"
+                            let paramInsert = [userRequester, userId, userId, userRequester]
+
+                            connection.query(sqlInsert, paramInsert, function (err, result) {
+                                connection.release()
+
+                                if(err){
+                                    callback(new Error("Error de acceso a la base de datos"))
+                                }else if(result.affectedRows > 0){
+                                    callback(null, userId)
+                                }else{
+                                    callback(new Error("Base de datos no consistente"))
+                                }
+                            })
+                        }
                     }
                 })
             }
@@ -100,21 +225,34 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM friendships WHERE userId = ? "
+
+                let sql = "SELECT * FROM users WHERE userId IN (SELECT friendId FROM friendships where userId = ?)"
                 let param = [userId]
+
                 connection.query(sql, param, function (err, result) {
                     connection.release()
+
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
+                        let friendsList = []
                         if(result.length == 0){
-                            callback(new Error("No existe el usuario"))
+                            callback(null, friendsList)
                         }else{
-                            let users = []
-                            result.forEach(id => {users.push(module.exports.getUser(userId, callback))})
-                            console.log(users)
-                            callback(null, users)
+                            
+                            result.forEach(user => {
+                                friendsList.push({
+                                    id: user.userId,
+                                    email: user.email,
+                                    password: user.password,
+                                    name: user.name,
+                                    genre: user.genre,
+                                    birthday: user.birthday,
+                                    image: user.image
+                                })
+                            })
+                            callback(null, friendsList)
                         }
                     }
                 })
@@ -122,29 +260,29 @@ class DAOUsers{
         })
     }
 
-    getUsersByName(email, callback){
+    getUsersByName(name, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM users WHERE email LIKE ?"
-                let param = ['%' + email + '%']
+                let sql = "SELECT * FROM users WHERE name LIKE ?"
+                let param = ['%' + name + '%']
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
+                        let users = []
                         if(result.length == 0){
-                            callback(new Error("No existe el usuario"))
+                            callback(null, users)
                         }else{
-                            let users = []
                             result.forEach(user => {
                                 users.push({
                                     id: user.userId,
                                     email: user.email,
                                     password: user.password,
-                                    email: user.email,
+                                    name: user.name,
                                     genre: user.genre,
                                     birthday: user.birthday,
                                     image: user.image

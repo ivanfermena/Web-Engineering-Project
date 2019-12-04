@@ -81,17 +81,112 @@ function getFriends(request, response, next) {
         let userId = request.session.currentUser
 
         DaoUser.getFriends(userId,
-            function (err, usersList) {
+            function (err, friendsList) {
                 if (err) {
                     next(err)
-                }else if(usersList.length >= 1){
+                }else {
+                    DaoUser.getFriendsRequest(userId,
+                        function (err, requestFriendsList) {
+                            if (err) {
+                                next(err)
+                            }else{
+                                response.status(200)
+                                response.render("users/friends", {friendsList: friendsList, requestFriendsList: requestFriendsList})
+                            }
+                        }
+                    )
+                }
+            }
+        )
+
+    }
+    else {
+        response.status(400)
+        response.render("users/friends")
+    }
+}
+
+
+function acceptRequest(request, response, next) {
+
+    if (request.params.userId != undefined){
+
+        let userId = request.session.currentUser
+        let userRequester = request.params.userId
+
+        DaoUser.acceptFriendsRequest(userId, userRequester,
+            function (err, user) {
+                if (err) {
+                    next(err)
+                }else if(user){
                     response.status(200)
-                    response.end({usersList: usersList})
+                    request.session.currentUser = userId
+                    response.redirect(`/user/friends`)
                 }else {
                     response.status(401)
-                    response.render("users/friends")
+                    response.redirect(`/user/friends`)
                 }
-            })
+            }
+        )
+
+    }
+    else {
+        response.status(400)
+        response.render("users/friends")
+    }
+}
+
+function deniedRequest(request, response, next) {
+
+    if (request.params.userId != undefined){
+
+        let userId = request.session.currentUser
+        let userRequester = request.params.userId
+
+        DaoUser.deniedFriendsRequest(userId, userRequester,
+            function (err, user) {
+                if (err) {
+                    next(err)
+                }else if(user){
+                    response.status(200)
+                    request.session.currentUser = userId
+                    response.redirect(`/user/friends`)
+                }else {
+                    response.status(401)
+                    response.redirect(`/user/friends`)
+                }
+            }
+        )
+
+    }
+    else {
+        response.status(400)
+        response.render("users/friends")
+    }
+}
+
+
+function requestFriend(request, response, next) {
+
+    if (request.params.userId != undefined){
+
+        let userId = request.session.currentUser
+        let userRequester = request.params.userId
+
+        DaoUser.newRequestFriend(userId, userRequester,
+            function (err, user) {
+                if (err) {
+                    next(err)
+                }else if(user){
+                    response.status(200)
+                    request.session.currentUser = userId
+                    response.redirect(`/user/friends`)
+                }else {
+                    response.status(401)
+                    response.redirect(`/user/friends`)
+                }
+            }
+        )
 
     }
     else {
@@ -120,7 +215,6 @@ function modifyUser(request, response, next){
 
         DaoUser.modifyUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday, 
             function (err, user) {
-                console.log(user)
                 if (err) {
                     next(err)
                 }else if(user){
@@ -177,5 +271,8 @@ module.exports = {
     modifyUser: modifyUser,
     searchUsers: searchUsers,
     getFriends: getFriends,
+    acceptRequest: acceptRequest,
+    deniedRequest: deniedRequest,
+    requestFriend: requestFriend,
     signout: signout
 };

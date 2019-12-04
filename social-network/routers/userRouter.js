@@ -29,6 +29,13 @@ userRouter.post("/profile", services.getUser)
 userRouter.get("/friends", services.getFriends);
 
 
+userRouter.get("/accept/:userId", services.acceptRequest);
+userRouter.get("/denied/:userId", services.deniedRequest);
+
+
+userRouter.get("/requestFriend/:userId", services.requestFriend);
+
+
 userRouter.get("/search", function (request, response) {
     response.status(200)
     response.render("users/friends")

@@ -19,18 +19,23 @@
       <div class="sections">
         <h2>Solicitudes de amistad</h2>
         <ul>
+          <% if(requestFriendsList.length >= 1 ){ %>
+          <% requestFriendsList.forEach(user => { %>
           <li class="friend_send">
             <div class="friend">
               <a href="https://freecodecamp.org" class="logo-friend">
                 <img src="resources/user.png" alt="freeCodeCamp logo">
-                Juan
+                <%= user.name %>
               </a>
-              <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank"
-                  rel="nofollow noopener">Aceptar</a></div>
-              <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank"
-                  rel="nofollow noopener">Rechazar</a></div>
-            </div>
+              <div class="button_cont">
+                  <a class="button_control" href="accept/<%=user.id%> ">Aceptar</a>
+              </div>
+              <div class="button_cont">
+                  <a class="button_control" href="denied/<%=user.id%> ">Rechazar</a></div>
+              </div>
           </li>
+          <% }) %>
+          <% } %>
         </ul>
       </div>
     </div>
@@ -45,15 +50,17 @@
         <div class="sections" id="users_list">
             <h2>Busqueda de amigos</h2>
             <ul>
-              <% usersList.forEach(user => { %>
+              <% if(friendsList.length >= 1 ){ %>
+              <% friendsList.forEach(user => { %>
               <li>
                 <div class="friend">
                   <a href="https://freecodecamp.org" class="logo-friend">
                     <img src="resources/user.png" alt="freeCodeCamp logo"> <%= user.name %>
                   </a>
                 </div>
-                <% }) %>
               </li>
+              <% }) %>
+              <% } %>
             </ul>
           </div>
       </div>
