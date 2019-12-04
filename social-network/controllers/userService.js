@@ -28,38 +28,38 @@ function newUser(request, response, next){
         }
 
         DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday, 
-            function (err, user) {
+            function (err, userId) {
                 if (err) {
                     next(err)
-                }else if(user){
+                }else if(userId >= 0){
                     response.status(200)
-                    request.session.currentUser = userRequested.email
+                    request.session.currentUser = userId
                     response.redirect(`/user/profile`)
                 }else {
                     response.status(401)
-                    response.redirect("/users/register")
+                    response.render("users/register")
                 }
             })
     }
     else {
         response.status(400)
-        response.redirect("/users/register")
+        response.render("users/register")
     }
 }
 
 function getUser(request, response, next) {
-    
+
     if (request.session.currentUser != undefined){
 
-        let user_email = request.session.currentUser
+        let userId = request.session.currentUser
 
-        DaoUser.getUser(user_email,
+        DaoUser.getUser(userId,
             function (err, user) {
                 if (err) {
                     next(err)
                 }else if(user){
                     response.status(200)
-                    request.session.currentUser = user_email
+                    request.session.currentUser = userId
                     response.render(`users/profile`, {userInfo: user[0]})
                 }else {
                     response.status(401)
@@ -72,7 +72,32 @@ function getUser(request, response, next) {
         response.status(400)
         response.redirect("/login")
     }
+}
 
+function getFriends(request, response, next) {
+
+    if (request.session.currentUser != undefined){
+
+        let userId = request.session.currentUser
+
+        DaoUser.getFriends(userId,
+            function (err, usersList) {
+                if (err) {
+                    next(err)
+                }else if(usersList.length >= 1){
+                    response.status(200)
+                    response.end({usersList: usersList})
+                }else {
+                    response.status(401)
+                    response.render("users/friends")
+                }
+            })
+
+    }
+    else {
+        response.status(400)
+        response.render("users/friends")
+    }
 }
 
 function modifyUser(request, response, next){
@@ -100,7 +125,6 @@ function modifyUser(request, response, next){
                     next(err)
                 }else if(user){
                     response.status(200)
-                    request.session.currentUser = userRequested.email
                     response.redirect(`/user/profile`)
                 }else {
                     response.status(401)
@@ -114,6 +138,33 @@ function modifyUser(request, response, next){
     }
 }
 
+function searchUsers(request, response, next) {
+
+    if (request.body.name_search != undefined){
+
+        let name = request.body.name_search
+
+        DaoUser.getUsersByName(name,
+            function (err, usersList) {
+                if (err) {
+                    next(err)
+                }else if(usersList.length >= 1){
+                    response.status(200)
+                    response.render("users/search", {name, usersList: usersList})
+                }else {
+                    response.status(401)
+                    response.render("users/friends")
+                }
+            })
+
+    }
+    else {
+        response.status(400)
+        response.render("users/friends")
+    }
+
+}
+
 function signout(request, response, next){
     response.status(200)
     request.session.destroy()
@@ -124,5 +175,7 @@ module.exports = {
     newUser: newUser,
     getUser: getUser,
     modifyUser: modifyUser,
+    searchUsers: searchUsers,
+    getFriends: getFriends,
     signout: signout
 };

@@ -18,13 +18,13 @@ function isUserCorrect(request, response, next){
             password: request.body.user_password
         }
 
-        DaoUser.isUserCorrect(userRequested.email, userRequested.password, function(err, user){
+        DaoUser.isUserCorrect(userRequested.email, userRequested.password, function(err, userId){
             if(err){
                 next(err)
             }
-            else if(user){
+            else if(userId >= 0){
                 response.status(200)
-                request.session.currentUser = userRequested.email
+                request.session.currentUser = userId
                 response.redirect("user/profile")
             }
             else {

@@ -1,31 +1,40 @@
 "use strict";
 
 const express = require('express')
-const path = require('path')
-
-const multer = require("multer");
-const multerFactory = multer({ storage: multer.memoryStorage() });
 
 const userRouter = express.Router()
 const services = require("../controllers/userService")
 
+const multer = require("multer");
+const multerFactory = multer({ storage: multer.memoryStorage() });
+
 userRouter.get("/register", function (request, response) {
     response.status(200)
-    response.render("users/register");
-});
-
+    response.render("users/register")
+})
 userRouter.post("/register", multerFactory.single("user_img"), services.newUser)
+
 
 userRouter.get("/modify", function (request, response) {
     response.status(200)
-    response.render("users/modify");
-});
-
+    response.render("users/modify")
+})
 userRouter.post("/modify", multerFactory.single("user_img"), services.modifyUser)
 
-userRouter.get("/profile", services.getUser);
+
+userRouter.get("/profile", services.getUser)
+userRouter.post("/profile", services.getUser)
+
+
+userRouter.get("/friends", services.getFriends);
+
+
+userRouter.get("/search", function (request, response) {
+    response.status(200)
+    response.render("users/friends")
+});
+userRouter.post("/search", services.searchUsers);
 
 userRouter.get("/signout", services.signout);
-
 
 module.exports = userRouter;

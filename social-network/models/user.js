@@ -11,16 +11,16 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT count(*) AS ret FROM users WHERE email = ? AND password = ?"
+                let sql = "SELECT * FROM users WHERE email = ? AND password = ?"
                 let param = [email, password]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
-                    }else if(result[0].ret == 0){
-                        callback(null, false)
-                    }else if(result[0].ret == 1){
-                        callback(null, true)
+                    }else if(result != undefined){
+                        callback(null, result[0].userId)
+                    }else if(result != undefined){
+                        callback(null, -1)
                     }else{
                         callback(new Error("Base de datos no consistente"))
                     }
@@ -34,7 +34,7 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "INSERT INTO users (userId, email, password, name, genre, birthday, image) VALUES (NULL, ?, ?, ?, ?, ?, ?)"
+                let sql = "INSERT INTO users (userId, email, password, genre, birthday, image) VALUES (NULL, ?, ?, ?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
 
                 connection.query(sql, param, function (err, result) {
@@ -42,6 +42,7 @@ class DAOUsers{
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
+                        console.log(result.insertId)
                         callback(null, result.insertId)
                     }else{
                         callback(new Error("Base de datos no consistente"))
@@ -73,13 +74,13 @@ class DAOUsers{
         })
     }
 
-    getUser(email, callback){
+    getUser(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM users WHERE email = ?"
-                let param = [email]
+                let sql = "SELECT * FROM users WHERE userId = ?"
+                let param = [userId]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
@@ -94,32 +95,58 @@ class DAOUsers{
         })
     }
 
-    getUsers(name, callback){
-        /*this.pool.getConnection(function (err, connection) {
+    getFriends(userId, callback){
+        this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM user WHERE name LIKE = ?%"
-                let param = [name]
+                let sql = "SELECT * FROM friendships WHERE userId = ? "
+                let param = [userId]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
-                        console.log(result)
                         if(result.length == 0){
                             callback(new Error("No existe el usuario"))
                         }else{
-                            users = []
+                            let users = []
+                            result.forEach(id => {users.push(module.exports.getUser(userId, callback))})
+                            console.log(users)
+                            callback(null, users)
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    getUsersByName(email, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+                let sql = "SELECT * FROM users WHERE email LIKE ?"
+                let param = ['%' + email + '%']
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }
+                    else{
+                        if(result.length == 0){
+                            callback(new Error("No existe el usuario"))
+                        }else{
+                            let users = []
                             result.forEach(user => {
                                 users.push({
                                     id: user.userId,
                                     email: user.email,
-                                    password = user.password,
-                                    name = user.name,
-                                    genre = user.genre,
-                                    birthday = user.birthday,
+                                    password: user.password,
+                                    email: user.email,
+                                    genre: user.genre,
+                                    birthday: user.birthday,
                                     image: user.image
                                 })
                             })
@@ -128,7 +155,7 @@ class DAOUsers{
                     }
                 })
             }
-        })*/
+        })
     }
 }
 
