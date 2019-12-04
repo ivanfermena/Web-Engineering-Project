@@ -9,43 +9,7 @@ const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoUser = new daoUser(pool)
 
-function newUser(request, response, next){
 
-    if (request.body.user_email != undefined && request.body.user_password != undefined && request.body.user_name != undefined && 
-        request.body.user_genre != undefined && request.body.user_birthday != undefined) {
-
-        let userRequested = {
-            email: request.body.user_email,
-            password: request.body.user_password,
-            name: request.body.user_name,
-            genre: request.body.user_genre,
-            birthday: request.body.user_birthday,
-            image: null
-        }
-
-        if (request.file) {        
-            userRequested.image = request.file.buffer
-        }
-
-        DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday, 
-            function (err, userId) {
-                if (err) {
-                    next(err)
-                }else if(userId >= 0){
-                    response.status(200)
-                    request.session.currentUser = userId
-                    response.redirect(`/user/profile`)
-                }else {
-                    response.status(401)
-                    response.render("users/register")
-                }
-            })
-    }
-    else {
-        response.status(400)
-        response.render("users/register")
-    }
-}
 
 function getUser(request, response, next) {
 

@@ -5,14 +5,8 @@ const express = require('express')
 const userRouter = express.Router()
 const services = require("../controllers/userService")
 
-const multer = require("multer");
-const multerFactory = multer({ storage: multer.memoryStorage() });
 
-userRouter.get("/register", function (request, response) {
-    response.status(200)
-    response.render("users/register")
-})
-userRouter.post("/register", multerFactory.single("user_img"), services.newUser)
+
 
 
 userRouter.get("/modify", function (request, response) {

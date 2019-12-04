@@ -25,6 +25,13 @@ main {
     justify-content: center;
 }
 
+.flash{
+    padding: 5%;
+    font-size: 1.3em;
+    align-self: center;
+    color: red;
+}
+
 #form_panel form{
     padding: 5%;
     font-size: 1.3em;

@@ -7,20 +7,21 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/login.css" media="screen">
-  <title>Tasks</title>
+  <title>Facefluff login</title>
 </head>
 
 <body>
 
-  <%- include("./general/nav_login") %>
+  <%- include("./../general/nav_login") %>
 
   <main>
     <div id="main_panel">
       <div id="column_img">
-        <img src="resources/login_column_img.jpg">
+        <img src="img/login_column_img.jpg">
       </div>
       <div id="form_panel">
-        <form action="" method="POST">
+        <%- include("./../general/flash") %>
+        <form action="/login" method="POST">
           Email: <input type="text" name="user_email">
           Password: <input type="password" name="user_password">
           <input class="button_control" type="submit" value="Conectar">

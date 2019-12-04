@@ -1,16 +1,19 @@
 "use strict";
 
 const express = require('express')
-const path = require('path')
 
 const loginRouter = express.Router()
-const services = require("../controllers/loginService")
+const controller = require("../controllers/loginController")
 
-loginRouter.get("", function (request, response) {
-    response.status(200)
-    response.render("login");
-});
+const multer = require("multer");
+const multerFactory = multer({ storage: multer.memoryStorage() });
 
-loginRouter.post("", services.isUserCorrect)
+loginRouter.get("", controller.loadLoginPage)
+
+loginRouter.post("", controller.isUserCorrect)
+
+loginRouter.get("/register", controller.loadRegisterPage)
+
+loginRouter.post("/register", multerFactory.single("user_img"), controller.newUser)
 
 module.exports = loginRouter;

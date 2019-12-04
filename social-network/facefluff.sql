@@ -2,10 +2,10 @@
 -- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 28-10-2019 a las 22:19:17
+-- Servidor: localhost
+-- Tiempo de generación: 04-12-2019 a las 19:14:10
 -- Versión del servidor: 10.4.8-MariaDB
--- Versión de PHP: 7.3.10
+-- Versión de PHP: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `aw`
+-- Base de datos: `facefluff`
 --
 
 -- --------------------------------------------------------
@@ -105,7 +105,6 @@ CREATE TABLE `usersguesses` (
 CREATE TABLE `usersresponses` (
   `responseId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
-  `questionId` int(11) NOT NULL,
   `answerId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -162,9 +161,8 @@ ALTER TABLE `usersguesses`
 --
 ALTER TABLE `usersresponses`
   ADD PRIMARY KEY (`responseId`),
-  ADD UNIQUE KEY `response_unq` (`userId`,`questionId`,`answerId`),
-  ADD KEY `usersxanswers_ibfk_1` (`answerId`),
-  ADD KEY `usersxanswers_ibfk_2` (`questionId`);
+  ADD UNIQUE KEY `response_unq` (`userId`,`answerId`) USING BTREE,
+  ADD KEY `usersxanswers_ibfk_1` (`answerId`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -230,7 +228,6 @@ ALTER TABLE `usersguesses`
 --
 ALTER TABLE `usersresponses`
   ADD CONSTRAINT `usersresponses_ibfk_1` FOREIGN KEY (`answerId`) REFERENCES `answers` (`answerId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `usersresponses_ibfk_2` FOREIGN KEY (`questionId`) REFERENCES `questions` (`questionId`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `usersresponses_ibfk_3` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
