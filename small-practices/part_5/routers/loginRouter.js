@@ -1,7 +1,6 @@
 "use strict";
 
 const express = require('express')
-const path = require('path')
 
 const loginRouter = express.Router()
 const loginController = require("../controllers/loginController")
