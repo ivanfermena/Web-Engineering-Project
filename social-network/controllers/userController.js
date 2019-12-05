@@ -9,7 +9,10 @@ const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoUser = new daoUser(pool)
 
-
+function loadModifyPage(request, response) {
+    response.status(200)
+    response.render("users/modify")
+}
 
 function getUser(request, response, next) {
 
@@ -230,7 +233,7 @@ function signout(request, response, next){
 }
 
 module.exports = {
-    newUser: newUser,
+    loadModifyPage: loadModifyPage,
     getUser: getUser,
     modifyUser: modifyUser,
     searchUsers: searchUsers,

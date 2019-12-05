@@ -36,12 +36,13 @@ class DAOUsers{
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
                 //TODO aqui hay que pasar birthday a formato yyyy-mm-dd por requisito de mysql
-                let sql = "INSERT INTO users (userId, email, password, genre, birthday, image) VALUES (NULL, ?, ?, ?, ?, ?, ?)"
+                let sql = "INSERT INTO users (email, password, name, genre, birthday, image) VALUES (?, ?,?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
-
+                
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
                         callback(null, result.insertId)

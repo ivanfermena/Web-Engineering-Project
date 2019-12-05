@@ -48,6 +48,8 @@ app.use("/login", loginRouter)
 // Middleware access
 app.use(accessMiddleware)
 
+const userRouter = require("./routers/userRouter")
+app.use("/user", userRouter)
 // ----- TODO -----
 
 app.get("/answer", function (request, response) {
