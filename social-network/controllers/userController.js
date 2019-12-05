@@ -232,6 +232,26 @@ function signout(request, response, next){
     response.redirect(`/login`)
 }
 
+function getUserImageName(req, res, next){
+
+    DaoUser.getUserImageName(req.session.currentUser, function(err, img){
+        if(err){
+            console.log(err)
+            next(err)
+        }
+
+        console.log(img)
+        if(img === null){
+            res.status(200)
+            res.sendFile(path.join(__dirname, '../public/img', 'user.png'))
+        }
+        else {
+            res.status(200)
+            res.sendFile(path.join(__dirname, '../profile_imgs', img))
+        }
+    })
+}
+
 module.exports = {
     loadModifyPage: loadModifyPage,
     getUser: getUser,

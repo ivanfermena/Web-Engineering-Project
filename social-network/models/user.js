@@ -214,6 +214,7 @@ class DAOUsers{
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result){
+                        console.log(result)
                         callback(null, result)
                     }else{
                         callback(new Error("Base de datos no consistente"))
@@ -298,6 +299,33 @@ class DAOUsers{
             }
         })
     }
+
+    getUserImageName(id, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+                let sql = "SELECT img FROM user WHERE userId = ?"
+                let param = [id]
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+                    if(err){
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }
+                    else{
+                        console.log("reccc")
+                        console.log(result[0].img)
+                        if(result[0].img == ''){
+                            callback(null, null)
+                        }else{
+                            callback(null, result[0].img)
+                        }
+                    }
+                })
+            }
+        })
+    }
+
 }
 
 module.exports = DAOUsers;

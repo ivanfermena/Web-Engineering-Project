@@ -13,8 +13,6 @@ app.set("views", path.join(__dirname, "views"))
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// SESSION (CONFIG??)
-
 const session = require("express-session")
 const mysqlSession = require("express-mysql-session")
 const MySQLStore = mysqlSession(session)
@@ -85,6 +83,7 @@ app.listen(3000, (err) => {
 function flashMiddleware(request, response, next) {
     response.setFlash = function (msg) {
         request.session.flashMsg = msg;
+        console.log(request.session.flashMsg)
     };
     response.locals.getAndClearFlash = function () {
         if (request.session.flashMsg === undefined){
@@ -108,7 +107,6 @@ function accessMiddleware(request, response, next) {
     }
 
     else {
-        response.locals.userEmail = request.session.currentUser
         next()
     }
 }
