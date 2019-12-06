@@ -107,23 +107,22 @@ function acceptRequest(request, response, next) {
     }
 }
 
-function deniedRequest(request, response, next) {
+function denieRequest(request, response, next) {
 
     if (request.params.userId != undefined) {
 
         let userId = request.session.currentUser
         let userRequester = request.params.userId
-
-        DaoUser.deniedFriendsRequest(userId, userRequester,
+        DaoUser.denieFriendshipRequest(userId, userRequester,
             function (err, user) {
                 if (err) {
                     next(err)
                 } else if (user) {
                     response.status(200)
-                    request.session.currentUser = userId
                     response.redirect(`/user/friends`)
                 } else {
-                    response.status(401)
+                    response.status(400)
+                    response.setFlash("Cannot denie the frienship request")
                     response.redirect(`/user/friends`)
                 }
             }
@@ -138,7 +137,6 @@ function deniedRequest(request, response, next) {
 
 
 function requestFriend(request, response, next) {
-
     if (request.params.userId === undefined) {
         response.status(400)
         //TODO configurar flash
@@ -168,7 +166,6 @@ function requestFriend(request, response, next) {
 }
 
 function modifyUser(request, response, next) {
-
     if (request.body.user_email != undefined && request.body.user_password != undefined && request.body.user_name != undefined &&
         request.body.user_genre != undefined && request.body.user_birthday != undefined) {
 
@@ -265,7 +262,7 @@ module.exports = {
     searchUsers: searchUsers,
     getFriends: getFriends,
     acceptRequest: acceptRequest,
-    deniedRequest: deniedRequest,
+    denieRequest: denieRequest,
     requestFriend: requestFriend,
     getUserImage: getUserImage,
     signout: signout

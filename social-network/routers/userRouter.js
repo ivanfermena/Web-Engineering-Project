@@ -22,7 +22,7 @@ userRouter.get("/friends", controller.getFriends);
 
 
 userRouter.get("/accept/:userId", controller.acceptRequest);
-userRouter.get("/denied/:userId", controller.deniedRequest);
+userRouter.get("/denie/:userId", controller.denieRequest);
 
 
 userRouter.get("/requestFriend/:userId", controller.requestFriend);

@@ -120,23 +120,33 @@ class DAOUsers{
         })
     }
 
-    deniedFriendsRequest(userId, userRequester, callback){
+    denieFriendshipRequest(userId, userRequester, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
-            }else{
-
+            }else{                
                 let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
-                let param = [userRequester, userId]
+                let param1 = [userRequester, userId]
+                let param2 = [userRequester, userId]
 
-                connection.query(sql, param, function (err, result) {
-                    connection.release()
+                connection.query(sql, param1, function (err, result) {
+
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
-                    }else if(result.affectedRows > 0){
-                        callback(null, true)
-                    }else{
-                        callback(new Error("Base de datos no consistente"))
+                    }
+                    else{
+                        if(result.affectedRows == 0){
+                            callback(new Error("No existe el usuario"))
+                        }else{
+                            if(err){
+                                callback(new Error("Error de acceso a la base de datos"))
+                            }else if(result.affectedRows > 0){
+                                callback(null, true)
+                            }else{
+                                callback(new Error("Base de datos no consistente"))
+                            }
+                        }
                     }
                 })
             }
@@ -147,34 +157,36 @@ class DAOUsers{
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
-            }else{
-                //TODO hay que borrar de los dos lados, pq puede haber un solicitud al reves
+            }else{                
                 let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
-                let param = [userRequester, userId]
+                let param1 = [userRequester, userId]
+                let param2 = [userRequester, userId]
 
-                connection.query(sql, param, function (err, result) {
+                connection.query(sql, param1, function (err, result) {
 
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
                         if(result.affectedRows == 0){
                             callback(new Error("No existe el usuario"))
                         }else{
-                            
-                            let sqlInsert = "INSERT INTO friendships (userId, friendId) VALUES (?, ?),(?, ?)"
-                            let paramInsert = [userRequester, userId, userId, userRequester]
+                            connection.query(sql, param2, function (err, result) {
+                                let sqlInsert = "INSERT INTO friendships (userId, friendId) VALUES (?, ?),(?, ?)"
+                                let paramInsert = [userRequester, userId, userId, userRequester]
 
-                            connection.query(sqlInsert, paramInsert, function (err, result) {
-                                connection.release()
+                                connection.query(sqlInsert, paramInsert, function (err, result) {
+                                    connection.release()
 
-                                if(err){
-                                    callback(new Error("Error de acceso a la base de datos"))
-                                }else if(result.affectedRows > 0){
-                                    callback(null, userId)
-                                }else{
-                                    callback(new Error("Base de datos no consistente"))
-                                }
+                                    if(err){
+                                        callback(new Error("Error de acceso a la base de datos"))
+                                    }else if(result.affectedRows > 0){
+                                        callback(null, userId)
+                                    }else{
+                                        callback(new Error("Base de datos no consistente"))
+                                    }
+                                })
                             })
                         }
                     }
