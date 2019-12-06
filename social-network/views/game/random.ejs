@@ -18,16 +18,16 @@
       <div class="sections">
         <h2>Preguntas aleatorias</h2>
         <ul class="list_questions">
-          <li><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><a href="#">¿Cual es tu historia favorita?</a></li>
+          <% if(questionsList.length >= 1 ){ %>
+          <% questionsList.forEach(question => { %>
+          <li><a href="#"><%= question.text %></a></li>
+          <% }) %>
+          <% } %>
         </ul>
       </div>
       <div  class="sections" id="insert_questions">
         <h2>Inserta tus preguntas</h2>
-        <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank" rel="nofollow noopener">Crear nueva pregunta</a></div>
+        <div class="button_cont"><a class="button_control" href="new_question">Crear nueva pregunta</a></div>
       </div>
     </main>
 </body>

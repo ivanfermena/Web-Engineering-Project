@@ -48,19 +48,12 @@ app.use(accessMiddleware)
 
 const userRouter = require("./routers/userRouter")
 app.use("/user", userRouter)
-// ----- TODO -----
 
-app.get("/answer", function (request, response) {
-    response.render("answer")
-})
+// Random question
+const gameRouter = require("./routers/gameRouter")
+app.use("/game", gameRouter)
 
-app.get("/question", function (request, response) {
-    response.render("question")
-})
 
-app.get("/random", function (request, response) {
-    response.render("random");
-});
 
 app.use(function(request, response){
     response.status(404);

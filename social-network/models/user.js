@@ -217,7 +217,6 @@ class DAOUsers{
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result){
-                        console.log(result)
                         callback(null, result)
                     }else{
                         callback(new Error("Base de datos no consistente"))
@@ -319,7 +318,6 @@ class DAOUsers{
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
-                        console.log(result[0].image)
                         if(result[0].image == null){
                             callback(null, null)
                         }

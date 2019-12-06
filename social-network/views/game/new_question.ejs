@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/register.css" media="screen">
+    <title>Tasks</title>
+  </head>
+  
+  <body>
+    
+    <%- include("./../general/nav") %>
+
+    <main>
+      <div id="main_panel">
+        <form action="/game/new_question" method="POST">
+            Question: <input type="text" name="new_question">
+            Answer 1: <input type="text" name="new_answer_1">
+            Answer 2: <input type="text" name="new_answer_2">
+            Answer 3: <input type="text" name="new_answer_3">
+            Answer 4: <input type="text" name="new_answer_4">
+          <input type="submit" value="Conectar" class="button_control">
+        </form>
+      </div>
+    </main>
+  </body>
+
+</html>

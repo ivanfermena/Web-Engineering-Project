@@ -32,6 +32,7 @@ userRouter.get("/search", function (request, response) {
     response.status(200)
     response.render("users/friends")
 });
+
 userRouter.post("/search", controller.searchUsers);
 
 userRouter.get("/signout", controller.signout);

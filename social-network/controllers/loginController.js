@@ -33,7 +33,6 @@ function isUserCorrect(request, response, next) {
         }
 
         DaoUser.isUserCorrect(userRequested.email, userRequested.password, function (err, userId) {
-            console.log(userId)
             if (err) {
                 next(err)
             }
