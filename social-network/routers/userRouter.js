@@ -8,7 +8,7 @@ const controller = require("../controllers/userController")
 const multer = require("multer");
 const multerFactory = multer({ storage: multer.memoryStorage() });
 
-userRouter.get("/image", controller.getUserImage)
+userRouter.get("/image/:userId", controller.getUserImage)
 
 userRouter.get("/modify", controller.loadModifyPage)
 userRouter.post("/modify", multerFactory.single("user_img"), controller.modifyUser)

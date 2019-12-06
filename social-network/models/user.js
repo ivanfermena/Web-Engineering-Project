@@ -54,19 +54,22 @@ class DAOUsers{
         })
     }
 
-    getFriendsRequest(userId, callback){
+    getRequestedFriends(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
-                let sql = "SELECT * FROM users WHERE userId IN (SELECT userRequester FROM friendshiprequests where userRequested = ?)"
+                let sql = "SELECT users.* FROM users JOIN friendshiprequests " +
+                "ON users.userId = friendshiprequests.userRequested " +
+                "WHERE friendshiprequests.userRequester = ?"
                 let param = [userId]
 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
 
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
@@ -110,7 +113,7 @@ class DAOUsers{
                     }else if(result.affectedRows > 0){
                         callback(null, true)
                     }else{
-                        callback(new Error("Base de datos no consistente"))
+                        callback(null, false)
                     }
                 })
             }
@@ -230,21 +233,23 @@ class DAOUsers{
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
-                let sql = "SELECT * FROM users WHERE userId IN (SELECT friendId FROM friendships where userId = ?)"
+                let sql = "SELECT users.* FROM users JOIN friendships " +
+                "ON users.userId = friendships.friendId " +
+                "WHERE friendships.userId = ?"
                 let param = [userId]
 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
 
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
                         let friendsList = []
                         if(result.length == 0){
                             callback(null, friendsList)
-                        }else{
-                            
+                        }else{    
                             result.forEach(user => {
                                 friendsList.push({
                                     id: user.userId,

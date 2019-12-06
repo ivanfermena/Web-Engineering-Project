@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/friends.css" media="screen">
-  <title>Tasks</title>
+  <title>Friends</title>
 </head>
 
 <body>
@@ -24,14 +24,14 @@
           <li class="friend_send">
             <div class="friend">
               <a href="https://freecodecamp.org" class="logo-friend">
-                <img src="resources/user.png" alt="freeCodeCamp logo">
+                <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo">
                 <%= user.name %>
               </a>
               <div class="button_cont">
-                  <a class="button_control" href="accept/<%=user.id%> ">Aceptar</a>
+                  <a class="button_control" href="accept/<%= user.id%> ">Aceptar</a>
               </div>
               <div class="button_cont">
-                  <a class="button_control" href="denied/<%=user.id%> ">Rechazar</a></div>
+                  <a class="button_control" href="denied/<%= user.id%> ">Rechazar</a></div>
               </div>
           </li>
           <% }) %>
@@ -50,17 +50,15 @@
         <div class="sections" id="users_list">
             <h2>Busqueda de amigos</h2>
             <ul>
-              <% if(friendsList.length >= 1 ){ %>
               <% friendsList.forEach(user => { %>
               <li>
                 <div class="friend">
                   <a href="https://freecodecamp.org" class="logo-friend">
-                    <img src="resources/user.png" alt="freeCodeCamp logo"> <%= user.name %>
+                    <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo"> <%= user.name %>
                   </a>
                 </div>
               </li>
               <% }) %>
-              <% } %>
             </ul>
           </div>
       </div>
