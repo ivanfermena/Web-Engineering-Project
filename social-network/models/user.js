@@ -61,8 +61,8 @@ class DAOUsers{
             }else{
 
                 let sql = "SELECT users.* FROM users JOIN friendshiprequests " +
-                "ON users.userId = friendshiprequests.userRequested " +
-                "WHERE friendshiprequests.userRequester = ?"
+                "ON users.userId = friendshiprequests.userRequester " +
+                "WHERE friendshiprequests.userRequested = ?"
                 let param = [userId]
 
                 connection.query(sql, param, function (err, result) {
@@ -148,7 +148,7 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-
+                //TODO hay que borrar de los dos lados, pq puede haber un solicitud al reves
                 let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
                 let param = [userRequester, userId]
 

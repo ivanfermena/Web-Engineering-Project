@@ -79,30 +79,31 @@ function getFriends(request, response, next) {
 
 function acceptRequest(request, response, next) {
 
-    if (request.params.userId != undefined) {
-
-        let userId = request.session.currentUser
+    if (request.params.userId === undefined) {
+        response.status(400)
+        //TODO configurar flash
+        response.setFlash("Friend id not specified")
+        response.render("users/friends")
+    }
+    else {
+        let userRequested = request.session.currentUser
         let userRequester = request.params.userId
 
-        DaoUser.acceptFriendsRequest(userId, userRequester,
+        DaoUser.acceptFriendsRequest(userRequested, userRequester,
             function (err, user) {
                 if (err) {
                     next(err)
                 } else if (user) {
                     response.status(200)
-                    request.session.currentUser = userId
                     response.redirect(`/user/friends`)
                 } else {
-                    response.status(401)
+                    response.status(400)
+                    response.setFlash("Friendship cannot be accepted")
                     response.redirect(`/user/friends`)
                 }
             }
         )
 
-    }
-    else {
-        response.status(400)
-        response.render("users/friends")
     }
 }
 
