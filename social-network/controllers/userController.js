@@ -1,6 +1,7 @@
 "use strict";
 
 const mysql = require('mysql')
+const path = require('path')
 
 const config = require('../config.js')
 const daoUser = new require('./../models/user')
@@ -232,9 +233,9 @@ function signout(request, response, next){
     response.redirect(`/login`)
 }
 
-function getUserImageName(req, res, next){
+function getUserImage(req, res, next){
 
-    DaoUser.getUserImageName(req.session.currentUser, function(err, img){
+    DaoUser.getUserImage(req.session.currentUser, function(err, img){
         if(err){
             console.log(err)
             next(err)
@@ -247,7 +248,7 @@ function getUserImageName(req, res, next){
         }
         else {
             res.status(200)
-            res.sendFile(path.join(__dirname, '../profile_imgs', img))
+            res.end(img)
         }
     })
 }
@@ -261,5 +262,6 @@ module.exports = {
     acceptRequest: acceptRequest,
     deniedRequest: deniedRequest,
     requestFriend: requestFriend,
+    getUserImage: getUserImage,
     signout: signout
 };

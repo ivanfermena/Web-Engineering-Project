@@ -300,25 +300,26 @@ class DAOUsers{
         })
     }
 
-    getUserImageName(id, callback){
+    getUserImage(id, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT img FROM user WHERE userId = ?"
+                let sql = "SELECT image FROM users WHERE userId = ?"
                 let param = [id]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
-                        console.log("reccc")
-                        console.log(result[0].img)
-                        if(result[0].img == ''){
+                        console.log(result[0].image)
+                        if(result[0].image == null){
                             callback(null, null)
-                        }else{
-                            callback(null, result[0].img)
+                        }
+                        else{
+                            callback(null, result[0].image)
                         }
                     }
                 })

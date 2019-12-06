@@ -99,6 +99,19 @@ function flashMiddleware(request, response, next) {
     next()
 }
 
+function loadImageMiddleware(req, res, next){
+    if(err){
+        console.log(err)
+        next(err)
+    }
+    
+    else {
+        res.status(200)
+        res.sendFile(path.join(__dirname, '../public/img', req.body.img))        
+    }
+        
+}
+    
 function accessMiddleware(request, response, next) {
     if (request.session.currentUser === undefined) {
         response.status(401)
