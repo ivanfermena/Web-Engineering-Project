@@ -14,8 +14,8 @@ userRouter.get("/modify", controller.loadModifyPage)
 userRouter.post("/modify", multerFactory.single("user_img"), controller.modifyUser)
 
 
-userRouter.get("/profile", controller.getUser)
-userRouter.post("/profile", controller.getUser)
+userRouter.get("/profile/:userId", controller.getUser)
+userRouter.post("/profile/:userId", controller.getUser)
 
 
 userRouter.get("/friends", controller.getFriends);

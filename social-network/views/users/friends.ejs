@@ -22,8 +22,8 @@
           <% requestedFriendsList.forEach(user => { %>
           <li class="friend_send">
             <div class="friend">
-              <a href="https://freecodecamp.org" class="logo-friend">
-                <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo">
+              <a href="/user/profile/<%= user.id %>" class="logo-friend">
+                <img src="/user/image/<%= user.id %>" alt="user profile image">
                 <%= user.name %>
               </a>
               <div class="button_cont">
@@ -51,8 +51,8 @@
               <% friendsList.forEach(user => { %>
               <li>
                 <div class="friend">
-                  <a href="https://freecodecamp.org" class="logo-friend">
-                    <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo"> <%= user.name %>
+                  <a href="/user/profile/<%= user.id %>" class="logo-friend">
+                    <img src="/user/image/<%= user.id %>" alt="user profile image"> <%= user.name %>
                   </a>
                 </div>
               </li>

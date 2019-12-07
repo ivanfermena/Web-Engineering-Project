@@ -22,10 +22,12 @@
           <% usersList.forEach(user => { %>
           <li>
               <div class="friend">
-                <a href="https://freecodecamp.org" class="logo-friend">
-                  <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo"> <%= user.name %>
+                <a href="/user/profile/<%= user.id %>" class="logo-friend">
+                  <img src="/user/image/<%= user.id %>" alt="user profile image"> <%= user.name %>
                 </a>
-                <div class="button_cont"><a class="button_control" href="requestFriend/<%=user.id%>">Solicitar amistad</a></div>
+                <div class="button_cont">
+                  <a class="button_control" href="/user/requestFriend/<%=user.id%>">Solicitar amistad</a>
+                </div>
               </div>
           </li>
           <% }) %>

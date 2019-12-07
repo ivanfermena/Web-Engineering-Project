@@ -44,7 +44,7 @@ function isUserCorrect(request, response, next) {
             else {
                 response.status(200)
                 request.session.currentUser = userId
-                response.redirect("user/profile")
+                response.redirect("user/profile/"+userId)
             }
         })
 
@@ -80,11 +80,11 @@ function newUser(request, response, next) {
                 } else if (userId >= 0) {
                     response.status(200)
                     request.session.currentUser = userId
-                    response.redirect(`/user/profile`)
+                    response.redirect(`/user/profile/`+userId)
                 } else {
                     response.status(400)
                     response.setFlash("Check fields, and retry")
-                    response.render("users/register")
+                    response.rendirect("/login/register")
                 }
             })
     }

@@ -16,30 +16,29 @@ function loadModifyPage(request, response) {
 }
 
 function getUser(request, response, next) {
-
-    if (request.session.currentUser != undefined) {
-
-        let userId = request.session.currentUser
-
+    let userId = request.params.userId
         DaoUser.getUser(userId,
             function (err, user) {
                 if (err) {
                     next(err)
                 } else if (user) {
                     response.status(200)
-                    request.session.currentUser = userId
-                    response.render(`users/profile`, { userInfo: user[0] })
+                    let currentUser = false
+                    if(request.session.currentUser == userId){
+                        currentUser = true
+                    }
+                    response.render(`users/profile`, { userInfo: user[0], modify: currentUser })
                 } else {
-                    response.status(401)
-                    response.render("/login")
+                    response.status(404)
+                    response.setFlash("User does not exists")
+                    if(!(currentUser)){
+                        response.redirect("user/friends")
+                    }
+                    else {
+                        next(new Error("current user not exists into DB"))
+                    }
                 }
             })
-
-    }
-    else {
-        response.status(400)
-        response.redirect("/login")
-    }
 }
 
 function getFriends(request, response, next) {
