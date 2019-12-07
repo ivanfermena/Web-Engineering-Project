@@ -1,6 +1,7 @@
   
   @import "./header.css";
-
+  @import "./flash.css";
+  
   main {
     height: 100%;
     padding-top: 2em;

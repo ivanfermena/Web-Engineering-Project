@@ -10,79 +10,72 @@ const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoUser = new daoUser(pool)
 
-function loadModifyPage(request, response) {
-    response.status(200)
-    response.render("users/modify")
-}
 
 function getUser(request, response, next) {
     let userId = request.params.userId
-        DaoUser.getUser(userId,
-            function (err, user) {
-                if (err) {
-                    next(err)
-                } else if (user) {
-                    response.status(200)
-                    let currentUser = false
-                    if(request.session.currentUser == userId){
-                        currentUser = true
-                    }
-                    response.render(`users/profile`, { userInfo: user[0], modify: currentUser })
-                } else {
-                    response.status(404)
-                    response.setFlash("User does not exists")
-                    if(!(currentUser)){
-                        response.redirect("user/friends")
-                    }
-                    else {
-                        next(new Error("current user not exists into DB"))
-                    }
+    DaoUser.getUser(userId,
+        function (err, user) {
+            if (err) {
+                next(err)
+            } else if (user) {
+                response.status(200)
+                let currentUser = false
+                if (request.session.currentUser == userId) {
+                    currentUser = true
                 }
-            })
+                response.render(`users/profile`, {userId:request.session.currentUser,
+                     userInfo: user[0], modify: currentUser })
+            } else {
+                response.status(404)
+                response.setFlash("User does not exists")
+                if (!(currentUser)) {
+                    response.redirect("user/friends")
+                }
+                else {
+                    next(new Error("current user not exists into DB"))
+                }
+            }
+        })
 }
 
 function getFriends(request, response, next) {
 
-    if (request.session.currentUser != undefined) {
+    let userId = request.session.currentUser
 
-        let userId = request.session.currentUser
-
-        DaoUser.getFriends(userId,
-            function (err, friendsList) {
-                if (err) {
-                    next(err)
-                } else {
-                    DaoUser.getRequestedFriends(userId,
-                        function (err, requestedFriendsList) {
-                            if (err) {
-                                next(err)
-                            } else{
-                                response.status(200)
-                                response.render("users/friends",
-                                    {friendsList: friendsList, 
-                                      requestedFriendsList: requestedFriendsList })
-                            }
+    DaoUser.getFriends(userId,
+        function (err, friendsList) {
+            if (err) {
+                next(err)
+            } else {
+                DaoUser.getRequestedFriends(userId,
+                    function (err, requestedFriendsList) {
+                        if (err) {
+                            next(err)
+                        } else {
+                            response.status(200)
+                            response.render("users/friends",
+                                {
+                                    userId: userId,
+                                    friendsList: friendsList,
+                                    requestedFriendsList: requestedFriendsList
+                                })
                         }
-                    )
-                }
+                    }
+                )
             }
-        )
+        }
+    )
 
-    }
-    else {
-        response.status(400)
-        response.render("users/friends")
-    }
 }
+
 
 
 function acceptRequest(request, response, next) {
 
     if (request.params.userId === undefined) {
         response.status(400)
-        //TODO configurar flash
         response.setFlash("Friend id not specified")
-        response.render("users/friends")
+        response.rendirect("/user/friends")
     }
     else {
         let userRequested = request.session.currentUser
@@ -102,7 +95,6 @@ function acceptRequest(request, response, next) {
                 }
             }
         )
-
     }
 }
 
@@ -164,13 +156,18 @@ function requestFriend(request, response, next) {
     }
 }
 
+function loadModifyPage(request, response) {
+    response.status(200)
+    response.render("users/modify", {userId:request.session.currentUser})
+}
+
 function modifyUser(request, response, next) {
     if (request.body.user_email == '' || request.body.user_password == '' || request.body.user_name == '' ||
-        request.body.user_genre == '' || request.body.user_birthday == ''){
-            response.status(400)
-            response.setFlash("Some field not filled")
-            response.redirect("/user/modify")
-        }
+        request.body.user_genre == '' || request.body.user_birthday == '') {
+        response.status(400)
+        response.setFlash("Some field not filled")
+        response.redirect("/user/modify")
+    }
     else {
         let userRequested = {
             email: request.body.user_email,
@@ -193,10 +190,7 @@ function modifyUser(request, response, next) {
                     next(err)
                 } else if (user) {
                     response.status(200)
-                    response.redirect(`/user/profile`)
-                } else {
-                    response.status(401)
-                    response.redirect("/user/modify")
+                    response.redirect(`/user/profile`+request.session.currentUser)
                 }
             })
     }
@@ -207,7 +201,7 @@ function searchUsers(request, response, next) {
     if (request.body.name_search === undefined) {
         response.status(400)
         response.setFlash("No user specified for be searched")
-        response.render("users/friends")
+        response.redirect("/user/friends")
     }
     else {
         let name = request.body.name_search
@@ -218,11 +212,13 @@ function searchUsers(request, response, next) {
                     next(err)
                 } else if (usersList.length >= 1) {
                     response.status(200)
-                    response.render("users/search", { name, usersList: usersList })
+                    response.render("users/search", {userId: request.session.currentUser,
+                         name, usersList: usersList })
                 } else {
                     response.status(200)
                     response.setFlash("No users found")
-                    response.render("users/search", {name, usersList: []})
+                    response.render("users/search", { userId: request.session.currentUser,
+                        name, usersList: [] })
                 }
             })
     }
