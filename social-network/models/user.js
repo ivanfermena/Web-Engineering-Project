@@ -195,17 +195,18 @@ class DAOUsers{
         })
     }
 
-    modifyUser(email, password, name, genre, image, birthday, callback){
+    modifyUser(email, password, name, genre, image, birthday, userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "UPDATE users SET email = ?, password = ?, name = ?, genre = ?, birthday = ?, image = ? where email = ?"
-                let param = [email, password, name, genre, birthday, image, email]
+                let sql = "UPDATE users SET email = ?, password = ?, name = ?, genre = ?, birthday = ?, image = ? where userId = ?"
+                let param = [email, password, name, genre, birthday, image, userId]
 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }else if(result.affectedRows > 0){
                         callback(null, true)
@@ -290,6 +291,7 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
+                        console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
@@ -308,6 +310,7 @@ class DAOUsers{
                                     image: user.image
                                 })
                             })
+                            
                             callback(null, users)
                         }
                     }

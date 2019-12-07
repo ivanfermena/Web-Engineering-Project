@@ -57,11 +57,11 @@ function getFriends(request, response, next) {
                         function (err, requestedFriendsList) {
                             if (err) {
                                 next(err)
-                            } else {
+                            } else{
                                 response.status(200)
                                 response.render("users/friends",
                                     {friendsList: friendsList, 
-                                      requestFriendsList: requestedFriendsList })
+                                      requestedFriendsList: requestedFriendsList })
                             }
                         }
                     )
@@ -166,9 +166,13 @@ function requestFriend(request, response, next) {
 }
 
 function modifyUser(request, response, next) {
-    if (request.body.user_email != undefined && request.body.user_password != undefined && request.body.user_name != undefined &&
-        request.body.user_genre != undefined && request.body.user_birthday != undefined) {
-
+    if (request.body.user_email == '' || request.body.user_password == '' || request.body.user_name == '' ||
+        request.body.user_genre == '' || request.body.user_birthday == ''){
+            response.status(400)
+            response.setFlash("Some field not filled")
+            response.redirect("/user/modify")
+        }
+    else {
         let userRequested = {
             email: request.body.user_email,
             password: request.body.user_password,
@@ -184,6 +188,7 @@ function modifyUser(request, response, next) {
 
         DaoUser.modifyUser(userRequested.email, userRequested.password,
             userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday,
+            request.session.currentUser,
             function (err, user) {
                 if (err) {
                     next(err)
@@ -196,16 +201,16 @@ function modifyUser(request, response, next) {
                 }
             })
     }
-    else {
-        response.status(400)
-        response.redirect("/users/register")
-    }
 }
 
 function searchUsers(request, response, next) {
 
-    if (request.body.name_search != undefined) {
-
+    if (request.body.name_search === undefined) {
+        response.status(400)
+        response.setFlash("No user specified for be searched")
+        response.render("users/friends")
+    }
+    else {
         let name = request.body.name_search
 
         DaoUser.getUsersByName(name,
@@ -216,17 +221,12 @@ function searchUsers(request, response, next) {
                     response.status(200)
                     response.render("users/search", { name, usersList: usersList })
                 } else {
-                    response.status(401)
-                    response.render("users/friends")
+                    response.status(200)
+                    response.setFlash("No users found")
+                    response.render("users/search", {name, usersList: []})
                 }
             })
-
     }
-    else {
-        response.status(400)
-        response.render("users/friends")
-    }
-
 }
 
 function signout(request, response, next) {

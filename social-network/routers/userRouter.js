@@ -30,7 +30,7 @@ userRouter.get("/requestFriend/:userId", controller.requestFriend);
 
 userRouter.get("/search", function (request, response) {
     response.status(200)
-    response.render("users/friends")
+    response.render("user/friends")
 });
 
 userRouter.post("/search", controller.searchUsers);

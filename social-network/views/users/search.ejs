@@ -17,12 +17,13 @@
     <main>
       <div class="sections">
         <h2>Busqueda con: <%= name %></h2>
+        <%- include("./../general/flash") %>
         <ul>
           <% usersList.forEach(user => { %>
           <li>
               <div class="friend">
                 <a href="https://freecodecamp.org" class="logo-friend">
-                  <img src="resources/user.png" alt="freeCodeCamp logo"> <%= user.name %>
+                  <img src="/user/image/<%= user.id %>" alt="freeCodeCamp logo"> <%= user.name %>
                 </a>
                 <div class="button_cont"><a class="button_control" href="requestFriend/<%=user.id%>">Solicitar amistad</a></div>
               </div>

@@ -57,7 +57,7 @@ function newUser(request, response, next) {
         request.body.user_genre == '' || request.body.user_birthday == '') {
         response.status(400)
         response.setFlash("Some field not filled")
-        response.redirect("users/register")
+        response.redirect("/login/register")
     }
     else {
         let userRequested = {

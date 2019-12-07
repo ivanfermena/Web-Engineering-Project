@@ -19,8 +19,7 @@
       <div class="sections">
         <h2>Solicitudes de amistad</h2>
         <ul>
-          <% if(requestFriendsList.length >= 1 ){ %>
-          <% requestFriendsList.forEach(user => { %>
+          <% requestedFriendsList.forEach(user => { %>
           <li class="friend_send">
             <div class="friend">
               <a href="https://freecodecamp.org" class="logo-friend">
@@ -35,7 +34,6 @@
               </div>
           </li>
           <% }) %>
-          <% } %>
         </ul>
       </div>
     </div>

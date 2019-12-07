@@ -16,6 +16,7 @@
     <%- include("./../general/nav_login") %>
 
     <main>
+      <%- include("./../general/flash") %>
       <div id="main_panel">
         <form action="/login/register" method="POST" enctype="multipart/form-data">
           Email: <input type="text" name="user_email">
