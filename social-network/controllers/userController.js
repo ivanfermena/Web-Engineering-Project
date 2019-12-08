@@ -190,7 +190,7 @@ function modifyUser(request, response, next) {
                     next(err)
                 } else if (user) {
                     response.status(200)
-                    response.redirect(`/user/profile`+request.session.currentUser)
+                    response.redirect(`/user/profile/`+request.session.currentUser)
                 }
             })
     }
