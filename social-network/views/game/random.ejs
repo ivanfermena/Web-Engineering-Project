@@ -20,7 +20,7 @@
         <ul class="list_questions">
           <% if(questionsList.length >= 1 ){ %>
           <% questionsList.forEach(question => { %>
-          <li><a href="#"><%= question.text %></a></li>
+          <li><a href="/game/answer/<%= question.id %>"><%= question.text %></a></li>
           <% }) %>
           <% } %>
         </ul>

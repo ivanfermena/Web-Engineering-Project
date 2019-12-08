@@ -15,21 +15,21 @@
     <%- include("./../general/nav") %>
   
     <main>
-    <h1>¿De que color es el caballo blanco de santiago?</h1>
+    <h1><%= answersList[0].questionText %></h1>
     <div class="sections">
-      <form action="">
+      <form action="/game/answer/<%= answersList[0].questionId %>" method="POST">
         <ul class="list_questions">
-          <li><input type="radio" name="answer"><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><input type="radio" name="answer"><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><input type="radio" name="answer"><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><input type="radio" name="answer"><a href="#">¿Cual es tu historia favorita?</a></li>
-          <li><input type="radio" name="answer"> Otra:
-              <input type="text">
+          <% answersList.forEach(answer => { %>
+          <li><input type="radio" name="answers" value="<%= answer.id %>" ><%= answer.text %> </li>
+          <% }) %>
+          <li><input type="radio" name="answers" value="other"> Otra:
+              <input type="text" name="textNewAnswer">
           </li>
         </ul>
+        <div class="button_cont">
+          <input type="submit" value="Responder" class="button_control">
+        </div>      
       </form>
-      <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank"
-        rel="nofollow noopener">Responder</a></div>
     </div>
   </main>
 </body>

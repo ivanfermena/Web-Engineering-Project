@@ -37,11 +37,6 @@ function loadQuestion(request, response) {
     response.render("game/question")
 }
 
-function loadAnswer(request, response) {
-    response.status(200)
-    response.render("game/answer")
-}
-
 function newQuestion(request, response) {
 
     // He dictado que tiene que poner 4 las respuestas obligatoriamente
@@ -66,9 +61,8 @@ function newQuestion(request, response) {
                     next(err)
                 } else if (questionId >= 0) {
                     gameRequested.answers.forEach(answer => {
-                        DaoGame.newAnswer(questionId, answer,
+                        DaoGame.newAnswer(questionId, answer, 0,
                             function (err, answerId) {
-                                console.log("ID:" + answerId)
                                 if (err) {
                                     next(err)
                                 } else {
@@ -88,10 +82,116 @@ function newQuestion(request, response) {
     }
 }
 
+function loadAnswer(request, response) {
+    
+    if (request.params.questionId === undefined) {
+        response.status(400)
+        //TODO configurar flash
+        response.setFlash("Question not specified")
+        response.render("game/random")
+    }
+    else{
+        DaoGame.getQuestionWithAnswers(request.params.questionId,
+            function (err, questionWithAnswer) {
+                if (err) {
+                    next(err)
+                } else if (questionWithAnswer[0].questionText != "" && questionWithAnswer.length >= 1) {
+                    response.status(200)
+                    response.render("game/answer", { answersList : questionWithAnswer })
+                } else {
+                    response.status(401)
+                    response.render("game/random")
+                }
+            })
+    }
+}
+
+function saveAnswer(request, response){
+
+    if (request.body.answers === undefined) {
+        response.status(400)
+        response.setFlash("Answers id not specified")
+        response.render("game/random")
+    }
+    else {
+        let userId = request.session.currentUser
+        let questionId = request.params.questionId
+        let answerId = request.body.answers
+
+        if(answerId === "other"){
+            DaoGame.newAnswer(questionId, request.body.textNewAnswer, 1,
+                function (err, id) {
+                    if (err) {
+                        next(err)
+                    } else {
+                        response.status(200)
+                        DaoGame.insertAnswer(userId, id, 
+                            function (err, control) {
+                                if (err) {
+                                    next(err)
+                                } else if (control) {
+                                    response.status(200)
+                                    response.redirect("/game/random")
+                                } else {
+                                    response.status(400)
+                                    response.setFlash("Answer cannot be accepted")
+                                    response.redirect(`/game/random`)
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        }else{
+            DaoGame.insertAnswer(userId, answerId, 
+                function (err, control) {
+                    if (err) {
+                        next(err)
+                    } else if (control) {
+                        response.status(200)
+                        response.redirect("/game/random")
+                    } else {
+                        response.status(400)
+                        response.setFlash("Answer cannot be accepted")
+                        response.redirect(`/game/random`)
+                    }
+                }
+            )
+        }
+ 
+    }
+    
+}
+
+function loadAnswer(request, response) {
+
+    if (request.params.questionId === undefined) {
+        response.status(400)
+        //TODO configurar flash
+        response.setFlash("Question not specified")
+        response.render("game/random")
+    }
+    else{
+        DaoGame.getQuestionWithAnswers(request.params.questionId,
+            function (err, answerList) {
+                if (err) {
+                    next(err)
+                } else if (answerList[0].questionText != "" && answerList.length >= 1) {
+                    response.status(200)
+                    response.render("game/answer", { answersList : answerList })
+                } else {
+                    response.status(401)
+                    response.render("game/random")
+                }
+            })
+        }
+}
+
 module.exports = {
     randomQuestions: randomQuestions,
     loadNewQuestion: loadNewQuestion,
     newQuestion: newQuestion,
     loadAnswer: loadAnswer,
-    loadQuestion: loadQuestion
+    loadQuestion: loadQuestion,
+    saveAnswer: saveAnswer
 }

@@ -10,7 +10,8 @@ gameRouter.get("/random", controller.randomQuestions)
 gameRouter.get("/new_question", controller.loadNewQuestion)
 gameRouter.post("/new_question",controller.newQuestion)
 
-gameRouter.get("/answer", controller.loadAnswer)
+gameRouter.get("/answer/:questionId", controller.loadAnswer)
+gameRouter.post("/answer/:questionId", controller.saveAnswer)
 
 gameRouter.get("/question", controller.loadQuestion)
 
