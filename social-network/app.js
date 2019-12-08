@@ -61,10 +61,9 @@ app.use(function(request, response){
 })
 
 app.use(function (error, request, response, next) {
-    // Código 500: Internal server error   
     console.log(error)
     response.status(500);
-    response.render("general/500")
+    response.render("general/500", {userId: request.session.currentUser})
 })
 
 // APP Listen
@@ -90,19 +89,6 @@ function flashMiddleware(request, response, next) {
         
     }
     next()
-}
-
-function loadImageMiddleware(req, res, next){
-    if(err){
-        console.log(err)
-        next(err)
-    }
-    
-    else {
-        res.status(200)
-        res.sendFile(path.join(__dirname, '../public/img', req.body.img))        
-    }
-        
 }
     
 function accessMiddleware(request, response, next) {

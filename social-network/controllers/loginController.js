@@ -77,10 +77,10 @@ function newUser(request, response, next) {
             function (err, userId) {
                 if (err) {
                     next(err)
-                } else if (userId >= 0) {
+                } else if (userId > 0) {
                     response.status(200)
                     request.session.currentUser = userId
-                    response.redirect(`/user/profile/`+userId)
+                    response.redirect('/user/profile/'+userId)
                 } else {
                     response.status(400)
                     response.setFlash("Check fields, and retry")
