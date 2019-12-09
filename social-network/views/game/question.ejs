@@ -17,10 +17,9 @@
   <main>
     <div class="panel" id="left_panel">
       <div class="sections">
-        <h1>¿Cual es tu color favorito?</h1>
+        <h1> <%= question.text %> </h1>
         <p>No has contestado a esta pregunta</p>
-        <div class="button_cont"><a class="button_control" href="add-website-here" target="_blank"
-            rel="nofollow noopener">Contestar pregunta</a></div>
+        <div class="button_cont"><a class="button_control" href="/game/answer/<%= question.questionId %>" >Contestar pregunta</a></div>
       </div>
     </div>
     <div class="panel" id="right_panel">

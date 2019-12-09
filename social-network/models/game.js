@@ -153,6 +153,30 @@ class DAOGame{
         })
     }
 
+    getQuestion(questionId, callback){
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(new Error("Error de conexión a la base de datos"))
+            }else{
+                let sql = "SELECT * FROM `questions` WHERE questionId = ?"
+                let param = [questionId]
+                
+                connection.query(sql, param, function (err, result) {
+                    connection.release()
+
+                    if(err){
+                        console.log(err)
+                        callback(new Error("Error de acceso a la base de datos"))
+                    }else if(result){
+                        callback(null, result[0])
+                    }else{
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+        })
+    }
+
 
 }
 

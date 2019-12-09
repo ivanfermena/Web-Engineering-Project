@@ -13,6 +13,6 @@ gameRouter.post("/new_question",controller.newQuestion)
 gameRouter.get("/answer/:questionId", controller.loadAnswer)
 gameRouter.post("/answer/:questionId", controller.saveAnswer)
 
-gameRouter.get("/question", controller.loadQuestion)
+gameRouter.get("/question/:questionId", controller.loadQuestion)
 
 module.exports = gameRouter;

@@ -36,8 +36,27 @@ function loadNewQuestion(request, response) {
 }
 
 function loadQuestion(request, response) {
-    response.status(200)
-    response.render("game/question")
+
+    if (request.params.questionId === undefined) {
+        response.status(400)
+        response.setFlash("Question not specified")
+        response.render("game/random", {userId: request.session.currentUser})
+    }
+    else{
+        DaoGame.getQuestion(request.params.questionId,
+            function (err, question) {
+                if (err) {
+                    console.log(err)
+                    next(err)
+                } else if (question.text != "") {
+                    response.status(200)
+                    response.render("game/question", { userId: request.session.currentUser, question : question })
+                } else {
+                    response.status(401)
+                    response.render("game/random", {userId: request.session.currentUser})
+                }
+            })
+    }
 }
 
 function newQuestion(request, response) {
@@ -86,7 +105,7 @@ function newQuestion(request, response) {
 }
 
 function loadAnswer(request, response) {
-    
+
     if (request.params.questionId === undefined) {
         response.status(400)
         //TODO configurar flash
