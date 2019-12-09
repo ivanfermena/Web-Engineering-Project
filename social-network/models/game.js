@@ -89,15 +89,15 @@ class DAOGame{
         })
     }
 
-    getQuestionWithAnswers(questionId, callback){
+    getQuestionAnswers(questionId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
-                let sql = "SELECT answers.*, questions.text AS questionText " +
+                let sql = "SELECT answers.* " +
                 "FROM answers JOIN questions ON answers.questionId = questions.questionId " + 
-                "WHERE questions.questionId = ? && answers.isUserAnswer = 0";
+                "WHERE questions.questionId = ? AND answers.isUserAnswer = 0"
                 let param = [questionId]
                 
                 connection.query(sql, param, 
@@ -118,8 +118,7 @@ class DAOGame{
                                     id: answer.answerId,
                                     questionId: answer.questionId,
                                     text: answer.text,
-                                    isUserAnswer: answer.isUserAnswer,
-                                    questionText: answer.questionText
+                                    isUserAnswer: answer.isUserAnswer
                                 })
                             })
                             callback(null, answerList)

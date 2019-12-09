@@ -177,27 +177,37 @@ function saveAnswer(request, response){
 }
 
 function loadAnswer(request, response) {
-
-    if (request.params.questionId === undefined) {
+    let questionId = request.params.questionId
+    if (questionId === undefined) {
         response.status(400)
-        //TODO configurar flash
         response.setFlash("Question not specified")
         response.render("game/random")
     }
     else{
-        DaoGame.getQuestionWithAnswers(request.params.questionId,
-            function (err, answerList) {
-                if (err) {
-                    next(err)
-                } else if (answerList[0].questionText != "" && answerList.length >= 1) {
-                    response.status(200)
-                    response.render("game/answer", { answersList : answerList })
-                } else {
-                    response.status(401)
-                    response.render("game/random")
-                }
-            })
-        }
+        DaoGame.getQuestion(questionId,function(err, question){
+            if(err){
+                next(err)
+            }
+            else{
+                DaoGame.getQuestionAnswers(questionId,
+                    function (err, answerList) {
+                        if (err) {
+                            next(err)
+                        } else if(answerList.length > 0){
+                            response.status(200)
+                            response.render("game/answer", {userId: request.session.currentUser, question: question,
+                                                            answersList : answerList })
+                        }
+                        else {
+                            response.status(200)
+                            response.setFlash("No answers created for this question yet.")
+                            response.render("game/answer", {userId: request.session.currentUser, question: question,
+                                                            answersList : answerList })
+                        }
+                    })
+            }
+        })
+    }
 }
 
 module.exports = {

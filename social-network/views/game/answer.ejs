@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/answer.css" media="screen">
-  <title>Answer</title>
+  <title>Question Page</title>
 </head>
 
 <body>
@@ -15,9 +15,9 @@
     <%- include("./../general/nav") %>
   
     <main>
-    <h1><%= answersList[0].questionText %></h1>
+    <h1><%= question.text %></h1>
     <div class="sections">
-      <form action="/game/answer/<%= answersList[0].questionId %>" method="POST">
+      <form action="/game/answer/<%= question.questionId %>" method="POST">
         <ul class="list_questions">
           <% answersList.forEach(answer => { %>
           <li><input type="radio" name="answers" value="<%= answer.id %>" ><%= answer.text %> </li>
