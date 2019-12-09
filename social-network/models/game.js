@@ -159,7 +159,7 @@ class DAOGame{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM `questions` WHERE questionId = ?"
+                let sql = "SELECT * FROM questions WHERE questionId = ?"
                 let param = [questionId]
                 
                 connection.query(sql, param, function (err, result) {
@@ -178,7 +178,33 @@ class DAOGame{
         })
     }
 
+    isQuestionAnswered(userId, questionId, callback){
+        this.pool.getConnection(function(err, connection){
+            if(err){
+                console.log(err)
+                callback(new Error("Error de conexión con la base de datos"), null)
+            }
+            else {
+                let sql = "SELECT COUNT(answers.questionId), answers.text AS response FROM "+
+                "answers JOIN usersresponses ON answers.answerId = usersresponses.answerId "+
+                "WHERE usersresponses.userId = ? AND answers.questionId = ?"
+                let params = [userId, questionId]
+                connection.query(sql, params, function(err,result){
+                    if(err){
+                        console.log(err)
+                        callback(new Error("Error en la consulta"), null)
+                    }
+                    else if(result > 0){
+                        callback(null, result)
+                    }
+                    else {
+                        callback(null, false)
+                    }
+                })
+            }
 
+        })
+    }
 }
 
 module.exports = DAOGame;

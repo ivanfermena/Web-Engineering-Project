@@ -36,21 +36,38 @@ function loadNewQuestion(request, response) {
 }
 
 function loadQuestion(request, response) {
-
-    if (request.params.questionId === undefined) {
+    let questionId = request.params.questionId
+    if (questionId === undefined) {
         response.status(400)
         response.setFlash("Question not specified")
         response.render("game/random", {userId: request.session.currentUser})
     }
     else{
-        DaoGame.getQuestion(request.params.questionId,
+        DaoGame.getQuestion(questionId,
             function (err, question) {
                 if (err) {
                     console.log(err)
                     next(err)
                 } else if (question.text != "") {
-                    response.status(200)
-                    response.render("game/question", { userId: request.session.currentUser, question : question })
+                    DaoGame.isQuestionAnswered(request.session.currentUser, questionId, function(err, isAnswered){
+                        if(err){
+                            next(err)
+                        }
+                        else {
+                            response.status(200)
+                            if(isAnswered[0]){
+                                response.render("game/question", { userId: request.session.currentUser, 
+                                    question : question,
+                                    answer: isAnswered[1] })
+                            }
+                            else {
+                                response.render("game/question", { userId: request.session.currentUser, 
+                                    question : question,
+                                    answer: "No has contestado la pregunta aún." })
+                            }
+                        }
+                    })
+                    
                 } else {
                     response.status(400)
                     response.setFlash("This question has errors, please, select another one.")
