@@ -36,7 +36,8 @@ class DAOGame{
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
-                let sql = "INSERT INTO answers (questionId, text, isUserAnswer) VALUES (?, ?, ?)"
+                let sql = "INSERT INTO answers (questionId, text, isUserAnswer) " + 
+                "VALUES (?, ?, ?)"
                 let param = [questionId, text, isUserAnswer]
                 
                 connection.query(sql, param, function (err, result) {

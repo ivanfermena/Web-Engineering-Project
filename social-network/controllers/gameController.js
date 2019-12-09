@@ -32,7 +32,7 @@ function randomQuestions(request, response) {
 
 function loadNewQuestion(request, response) {
     response.status(200)
-    response.render("game/new_question")
+    response.render("game/new_question", {userId: request.session.currentUser})
 }
 
 function loadQuestion(request, response) {
@@ -61,12 +61,12 @@ function loadQuestion(request, response) {
 
 function newQuestion(request, response) {
 
-    // He dictado que tiene que poner 4 las respuestas obligatoriamente
+    
     if (request.body.new_question == '' || request.body.new_answer_1 == '' || request.body.new_answer_2 == '' ||
         request.body.new_answer_3 == '' || request.body.new_answer_4 == '') {
         response.status(400)
         response.setFlash("Some field not filled")
-        response.redirect("/game/random")
+        response.redirect("/game/new_question")
     }
     else {
         let gameRequested = {
@@ -82,19 +82,16 @@ function newQuestion(request, response) {
                 if (err) {
                     next(err)
                 } else if (questionId >= 0) {
+                    const isUserAnswer = 0
                     gameRequested.answers.forEach(answer => {
-                        DaoGame.newAnswer(questionId, answer, 0,
-                            function (err, answerId) {
-                                if (err) {
-                                    next(err)
-                                } else {
-                                    response.status(200)
-                                    response.redirect("/game/random")
-                                }
+                        DaoGame.newAnswer(questionId, answer, isUserAnswer,
+                            function (err) {
+                                if (err) { next(err) }
                             }
                         )
                     });
-                    
+                    response.status(200)
+                    response.redirect("/game/random")
                 } else {
                     response.status(400)
                     response.setFlash("Check fields, and retry")
