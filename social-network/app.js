@@ -57,7 +57,7 @@ app.use("/game", gameRouter)
 
 app.use(function(request, response){
     response.status(404);
-    response.render("general/404");
+    response.render("general/404", {userId: request.session.currentUser});
 })
 
 app.use(function (error, request, response, next) {
