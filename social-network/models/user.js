@@ -35,7 +35,6 @@ class DAOUsers{
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                //TODO aqui hay que pasar birthday a formato yyyy-mm-dd por requisito de mysql
                 let sql = "INSERT INTO users (email, password, name, genre, birthday, image) VALUES (?, ?,?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
                 

@@ -19,10 +19,13 @@ function randomQuestions(request, response) {
                 next(err)
             } else if (questionsList.length >= 1) {
                 response.status(200)
-                response.render("game/random", { questionsList: questionsList })
+                response.render("game/random", {userId: request.session.currentUser,
+                    questionsList: questionsList })
             } else {
-                response.status(401)
-                response.render("users/profile")
+                response.status(200)
+                response.setFlash("No questions have been added yet.")
+                response.render("game/random", {userId: request.session.currentUser,
+                    questionsList: questionsList })
             }
         })
 }
