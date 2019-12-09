@@ -52,7 +52,8 @@ function loadQuestion(request, response) {
                     response.status(200)
                     response.render("game/question", { userId: request.session.currentUser, question : question })
                 } else {
-                    response.status(401)
+                    response.status(400)
+                    response.setFlash("This question has errors, please, select another one.")
                     response.render("game/random", {userId: request.session.currentUser})
                 }
             })
@@ -96,30 +97,6 @@ function newQuestion(request, response) {
                     response.status(400)
                     response.setFlash("Check fields, and retry")
                     response.redirect("/game/random")
-                }
-            })
-    }
-}
-
-function loadAnswer(request, response) {
-
-    if (request.params.questionId === undefined) {
-        response.status(400)
-        //TODO configurar flash
-        response.setFlash("Question not specified")
-        response.render("game/random")
-    }
-    else{
-        DaoGame.getQuestionWithAnswers(request.params.questionId,
-            function (err, questionWithAnswer) {
-                if (err) {
-                    next(err)
-                } else if (questionWithAnswer[0].questionText != "" && questionWithAnswer.length >= 1) {
-                    response.status(200)
-                    response.render("game/answer", { answersList : questionWithAnswer })
-                } else {
-                    response.status(401)
-                    response.render("game/random")
                 }
             })
     }
