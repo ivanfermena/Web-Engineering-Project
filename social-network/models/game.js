@@ -177,24 +177,25 @@ class DAOGame{
         })
     }
 
-    isQuestionAnswered(userId, questionId, callback){
+    getUserAnswer(userId, questionId, callback){
         this.pool.getConnection(function(err, connection){
             if(err){
                 console.log(err)
                 callback(new Error("Error de conexión con la base de datos"), null)
             }
             else {
-                let sql = "SELECT COUNT(answers.questionId), answers.text AS response FROM "+
-                "answers JOIN usersresponses ON answers.answerId = usersresponses.answerId "+
+                let sql = "SELECT COUNT(answers.questionId) AS counter, answers.text, answers.answerId " +
+                "FROM answers JOIN usersresponses ON answers.answerId = usersresponses.answerId "+
                 "WHERE usersresponses.userId = ? AND answers.questionId = ?"
                 let params = [userId, questionId]
                 connection.query(sql, params, function(err,result){
+                    connection.release()
                     if(err){
                         console.log(err)
                         callback(new Error("Error en la consulta"), null)
                     }
-                    else if(result > 0){
-                        callback(null, result)
+                    else if(result[0].counter > 0){
+                        callback(null, result[0])
                     }
                     else {
                         callback(null, false)
@@ -202,6 +203,39 @@ class DAOGame{
                 })
             }
 
+        })
+    }
+
+    modifyAnswer(userId, questionId, lastAnswerId, answerId, callback){
+        this.pool.getConnection(function(err, connection){
+            if(err){
+                callback(new Error("Fallo de conexión con la BD"), null)
+            }
+            else {
+                let sql_delete_last = "DELETE FROM `usersresponses` WHERE userId = ? AND answerId = ?"
+                let params = [userId, lastAnswerId]
+                let sql_insert_new = "INSERT INTO usersresponses(userId, answerId) VALUES(?,?)"
+                connection.query(sql_delete_last, params, function(err, result){
+                    if(err){
+                        connection.release()
+                        callback(new Error("Error durante el borrado de la anterior respuesta"), null)
+                    }
+                    else {
+                        params[1] = answerId
+                        connection.query(sql_insert_new, params, function(err, result){
+                            connection.release()
+                            if(err){
+                                callback(new Error("Error durante la inserción de la nueva respuesta"), null)
+                            }
+                            else if(result.affectedRows > 0){
+                                callback(null, true)
+                            }else{
+                                callback(new Error("Base de datos no consistente"))
+                            }
+                        })
+                    }
+                })
+            }
         })
     }
 }
