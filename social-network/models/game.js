@@ -97,13 +97,11 @@ class DAOGame{
 
                 let sql = "SELECT answers.* " +
                 "FROM answers JOIN questions ON answers.questionId = questions.questionId " + 
-                "WHERE questions.questionId = ? AND answers.isUserAnswer = 0"
+                "WHERE questions.questionId = ?"
                 let param = [questionId]
-                
                 connection.query(sql, param, 
                     function (err, result) {
                     connection.release()
-
                     if(err){
                         console.log(err)
                         callback(new Error("Error de acceso a la base de datos"))
@@ -129,14 +127,14 @@ class DAOGame{
         })
     }
 
-    insertAnswer(userId, answerX, callback){
+    insertAnswer(userId, answer, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
                 let sql = "INSERT INTO usersresponses (userId, answerId) VALUES (?, ?)"
-                let param = [userId, answerX]
+                let param = [userId, answer]
                 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
@@ -206,18 +204,21 @@ class DAOGame{
         })
     }
 
-    modifyAnswer(userId, questionId, lastAnswerId, answerId, callback){
+    modifyAnswer(userId, lastAnswerId, answerId, callback){
         this.pool.getConnection(function(err, connection){
+
             if(err){
+                console.log(err)
                 callback(new Error("Fallo de conexión con la BD"), null)
             }
             else {
-                let sql_delete_last = "DELETE FROM `usersresponses` WHERE userId = ? AND answerId = ?"
+                let sql_delete_last = "DELETE FROM usersresponses WHERE userId = ? AND answerId = ?"
                 let params = [userId, lastAnswerId]
                 let sql_insert_new = "INSERT INTO usersresponses(userId, answerId) VALUES(?,?)"
                 connection.query(sql_delete_last, params, function(err, result){
                     if(err){
                         connection.release()
+                        console.log(err)
                         callback(new Error("Error durante el borrado de la anterior respuesta"), null)
                     }
                     else {
@@ -225,6 +226,7 @@ class DAOGame{
                         connection.query(sql_insert_new, params, function(err, result){
                             connection.release()
                             if(err){
+                                console.log(err)
                                 callback(new Error("Error durante la inserción de la nueva respuesta"), null)
                             }
                             else if(result.affectedRows > 0){

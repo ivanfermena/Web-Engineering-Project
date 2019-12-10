@@ -19,20 +19,24 @@ function randomQuestions(request, response) {
                 next(err)
             } else if (questionsList.length >= 1) {
                 response.status(200)
-                response.render("game/random", {userId: request.session.currentUser,
-                    questionsList: questionsList })
+                response.render("game/random", {
+                    userId: request.session.currentUser,
+                    questionsList: questionsList
+                })
             } else {
                 response.status(200)
                 response.setFlash("No questions have been added yet.")
-                response.render("game/random", {userId: request.session.currentUser,
-                    questionsList: questionsList })
+                response.render("game/random", {
+                    userId: request.session.currentUser,
+                    questionsList: questionsList
+                })
             }
         })
 }
 
 function loadNewQuestion(request, response) {
     response.status(200)
-    response.render("game/new_question", {userId: request.session.currentUser})
+    response.render("game/new_question", { userId: request.session.currentUser })
 }
 
 function loadQuestion(request, response) {
@@ -40,39 +44,43 @@ function loadQuestion(request, response) {
     if (questionId === undefined) {
         response.status(400)
         response.setFlash("Question not specified")
-        response.render("game/random", {userId: request.session.currentUser})
+        response.render("game/random", { userId: request.session.currentUser })
     }
-    else{
+    else {
         DaoGame.getQuestion(questionId,
             function (err, question) {
                 if (err) {
                     console.log(err)
                     next(err)
                 } else if (question.text != "") {
-                    DaoGame.getUserAnswer(request.session.currentUser, questionId, function(err, answer){
-                        if(err){
+                    DaoGame.getUserAnswer(request.session.currentUser, questionId, function (err, answer) {
+                        if (err) {
                             next(err)
                         }
                         else {
                             response.status(200)
                             console.log(answer)
-                            if(answer){
-                                response.render("game/question", { userId: request.session.currentUser, 
-                                    question : question,
-                                    answer: answer.text })
+                            if (answer) {
+                                response.render("game/question", {
+                                    userId: request.session.currentUser,
+                                    question: question,
+                                    answer: answer.text
+                                })
                             }
                             else {
-                                response.render("game/question", { userId: request.session.currentUser, 
-                                    question : question,
-                                    answer: "No has contestado la pregunta aún." })
+                                response.render("game/question", {
+                                    userId: request.session.currentUser,
+                                    question: question,
+                                    answer: "No has contestado la pregunta aún."
+                                })
                             }
                         }
                     })
-                    
+
                 } else {
                     response.status(400)
                     response.setFlash("This question has errors, please, select another one.")
-                    response.render("game/random", {userId: request.session.currentUser})
+                    response.render("game/random", { userId: request.session.currentUser })
                 }
             })
     }
@@ -80,7 +88,7 @@ function loadQuestion(request, response) {
 
 function newQuestion(request, response) {
 
-    
+
     if (request.body.new_question == '' || request.body.new_answer_1 == '' || request.body.new_answer_2 == '' ||
         request.body.new_answer_3 == '' || request.body.new_answer_4 == '') {
         response.status(400)
@@ -91,11 +99,11 @@ function newQuestion(request, response) {
         let gameRequested = {
             question: request.body.new_question,
             answers: [request.body.new_answer_1,
-                        request.body.new_answer_2,
-                        request.body.new_answer_3,
-                        request.body.new_answer_4]
+            request.body.new_answer_2,
+            request.body.new_answer_3,
+            request.body.new_answer_4]
         }
-        
+
         DaoGame.newQuestion(gameRequested.question,
             function (err, questionId) {
                 if (err) {
@@ -120,7 +128,7 @@ function newQuestion(request, response) {
     }
 }
 
-function saveAnswer(request, response){
+function saveAnswer(request, response) {
 
     if (request.body.answers === undefined) {
         response.status(400)
@@ -139,41 +147,66 @@ function saveAnswer(request, response){
                     if (err) {
                         next(err)
                     } else {
-                        response.status(200)
-                        DaoGame.insertAnswer(userId, id, 
-                            function (err, control) {
-                                if (err) {
-                                    next(err)
-                                } else if (control) {
-                                    response.status(200)
-                                    response.redirect("/game/random")
-                                } else {
-                                    response.status(400)
-                                    response.setFlash("Answer cannot be accepted")
-                                    response.redirect(`/game/random`)
-                                }
+                        //Esto es importante pq en este momento answerId == 'other'
+                        answerId = id
+                        DaoGame.getUserAnswer(userId, questionId, function(err,lastAnswer){
+                            if(err){
+                                next(err)
                             }
-                        )
+                            else if(lastAnswer) {
+                                DaoGame.modifyAnswer(userId, lastAnswer.answerId, answerId, function(err, inserted){
+                                    if (err) {
+                                        next(err)
+                                    } else if (inserted) {
+                                        response.status(200)
+                                        response.redirect("/game/question/"+questionId)
+                                    } else {
+                                        response.status(400)
+                                        response.setFlash("Answer cannot be accepted")
+                                        response.redirect("/game/question/"+questionId)
+                                    }
+                                })
+                            }
+                            else {
+                                
+                                DaoGame.insertAnswer(userId, answerId, 
+                                    function (err, inserted) {
+                                        if (err) {
+                                            next(err)
+                                        } else if (inserted) {
+                                            response.status(200)
+                                            response.redirect("/game/question/"+questionId)
+                                        } else {
+                                            response.status(400)
+                                            response.setFlash("Answer cannot be accepted")
+                                            response.redirect("/game/question/"+questionId)
+                                        }
+                                    }
+                                )
+                            }
+            
+                        })
                     }
                 }
             )
         }
-    else {
+        else {
+                
             DaoGame.getUserAnswer(userId, questionId, function(err,lastAnswer){
                 if(err){
                     next(err)
                 }
                 else if(lastAnswer) {
-                    DaoGame.modifyAnswer(userId, questionId, lastAnswer.answerId, answerId, function(err, inserted){
+                    DaoGame.modifyAnswer(userId, lastAnswer.answerId, answerId, function(err, inserted){
                         if (err) {
                             next(err)
                         } else if (inserted) {
                             response.status(200)
-                            response.redirect("/game/random")
+                            response.redirect("/game/question/"+questionId)
                         } else {
                             response.status(400)
                             response.setFlash("Answer cannot be accepted")
-                            response.redirect(`/game/random`)
+                            response.redirect("/game/question/"+questionId)
                         }
                     })
                 }
@@ -184,11 +217,11 @@ function saveAnswer(request, response){
                                 next(err)
                             } else if (inserted) {
                                 response.status(200)
-                                response.redirect("/game/random")
+                                response.redirect("/game/question/"+questionId)
                             } else {
                                 response.status(400)
                                 response.setFlash("Answer cannot be accepted")
-                                response.redirect(`/game/random`)
+                                response.redirect("/game/question/"+questionId)
                             }
                         }
                     )
@@ -198,46 +231,50 @@ function saveAnswer(request, response){
         }
     }
 }
-
-function loadAnswer(request, response) {
-    let questionId = request.params.questionId
-    if (questionId === undefined) {
-        response.status(400)
-        response.setFlash("Question not specified")
-        response.redirect("game/random")
+    function loadAnswer(request, response) {
+        let questionId = request.params.questionId
+        if (questionId === undefined) {
+            response.status(400)
+            response.setFlash("Question not specified")
+            response.redirect("game/random")
+        }
+        else {
+            DaoGame.getQuestion(questionId, function (err, question) {
+                if (err) {
+                    next(err)
+                }
+                else {
+                    DaoGame.getQuestionAnswers(questionId,
+                        function (err, answerList) {
+                            console.log(answerList)
+                            if (err) {
+                                next(err)
+                            } else if (answerList.length > 0) {
+                                response.status(200)
+                                response.render("game/answer", {
+                                    userId: request.session.currentUser, question: question,
+                                    answersList: answerList
+                                })
+                            }
+                            else {
+                                response.status(200)
+                                response.setFlash("No answers created for this question yet.")
+                                response.render("game/answer", {
+                                    userId: request.session.currentUser, question: question,
+                                    answersList: answerList
+                                })
+                            }
+                        })
+                }
+            })
+        }
     }
-    else{
-        DaoGame.getQuestion(questionId,function(err, question){
-            if(err){
-                next(err)
-            }
-            else{
-                DaoGame.getQuestionAnswers(questionId,
-                    function (err, answerList) {
-                        if (err) {
-                            next(err)
-                        } else if(answerList.length > 0){
-                            response.status(200)
-                            response.render("game/answer", {userId: request.session.currentUser, question: question,
-                                                            answersList : answerList })
-                        }
-                        else {
-                            response.status(200)
-                            response.setFlash("No answers created for this question yet.")
-                            response.render("game/answer", {userId: request.session.currentUser, question: question,
-                                                            answersList : answerList })
-                        }
-                    })
-            }
-        })
-    }
-}
 
-module.exports = {
-    randomQuestions: randomQuestions,
-    loadNewQuestion: loadNewQuestion,
-    newQuestion: newQuestion,
-    loadAnswer: loadAnswer,
-    loadQuestion: loadQuestion,
-    saveAnswer: saveAnswer
-}
+    module.exports = {
+        randomQuestions: randomQuestions,
+        loadNewQuestion: loadNewQuestion,
+        newQuestion: newQuestion,
+        loadAnswer: loadAnswer,
+        loadQuestion: loadQuestion,
+        saveAnswer: saveAnswer
+    }
