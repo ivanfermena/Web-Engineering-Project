@@ -11,7 +11,7 @@ const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoGame = new daoGame(pool)
 
-function randomQuestions(request, response) {
+function randomQuestions(request, response, next) {
     response.status(200)
 
     DaoGame.getRandomQuestions(
@@ -35,12 +35,12 @@ function randomQuestions(request, response) {
         })
 }
 
-function loadNewQuestion(request, response) {
+function loadNewQuestion(request, response, next) {
     response.status(200)
     response.render("game/new_question", { userId: request.session.currentUser })
 }
 
-function loadQuestion(request, response) {
+function loadQuestion(request, response, next) {
     let questionId = request.params.questionId
     if (questionId === undefined) {
         response.status(400)
@@ -132,7 +132,7 @@ function loadQuestion(request, response) {
     }
 }
 
-function newQuestion(request, response) {
+function newQuestion(request, response, next) {
 
 
     if (request.body.new_question == '' || request.body.new_answer_1 == '' || request.body.new_answer_2 == '' ||
@@ -174,7 +174,7 @@ function newQuestion(request, response) {
     }
 }
 
-function saveAnswer(request, response) {
+function saveAnswer(request, response, next) {
 
     if (request.body.answers === undefined) {
         response.status(400)
@@ -277,7 +277,7 @@ function saveAnswer(request, response) {
         }
     }
 }
-function loadAnswer(request, response) {
+function loadAnswer(request, response, next) {
     let questionId = request.params.questionId
     if (questionId === undefined) {
         response.status(400)
@@ -316,7 +316,7 @@ function loadAnswer(request, response) {
     }
 }
 
-function loadGuessPage(request, response) {
+function loadGuessPage(request, response, next) {
     let questionId = request.params.questionId
     let friendResId = request.params.friendResId
     if (questionId === undefined || friendResId === undefined) {
@@ -333,8 +333,8 @@ function loadGuessPage(request, response) {
 
                 DaoGame.getGuessingAnswers(questionId,
                     function (err, answerList) {
-                        console.log(answerList)
                         if (err) {
+                            console.log(err)
                             next(err)
                         } else {
                             DaoGame.getFriendAnswer(friendResId, function (err, friendAnswer) {
@@ -365,7 +365,7 @@ function loadGuessPage(request, response) {
         })
     }
 }
-function saveGuess(request, response) {
+function saveGuess(request, response, next) {
     let questionId = request.params.questionId
     let friendResId = request.params.friendResId
     let answer = request.body.answer

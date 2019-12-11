@@ -320,13 +320,13 @@ class DAOGame {
                 callback(new Error("Error de conexión a la BD"), null)
             }
             else {
-                let sql = "SELECT * FROM answers WHERE questionId = ? ORDER BY RAND() LIMIT 5"
+                let sql = "SELECT * FROM answers WHERE questionId = ? AND isUserAnswer = 0 ORDER BY RAND() LIMIT 4"
                 let param = [questionId]
                 connection.query(sql, param, function (err, answers) {
                     connection.release()
                     if (err) {
                         console.log(err)
-                        callback(new Error("Error al realizar la consulta a BD"), null)
+                        callback(new Error("Error al realizar la consulta a BD"))
                     }
                     else {
                         let answerList = []
