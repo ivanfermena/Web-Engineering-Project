@@ -43,8 +43,8 @@ function isUserCorrect(request, response, next) {
             }
             else {
                 response.status(200)
-                request.session.currentUser = userId
-                response.redirect("user/profile/"+userId)
+                request.session.currentUser = {id: userId, points: 0} 
+                response.redirect("/user/profile/"+userId)
             }
         })
 
@@ -79,7 +79,8 @@ function newUser(request, response, next) {
                     next(err)
                 } else if (userId > 0) {
                     response.status(200)
-                    request.session.currentUser = userId
+                    request.session.currentUser = {id: userId, points: 0}
+                    
                     response.redirect('/user/profile/'+userId)
                 } else {
                     response.status(400)

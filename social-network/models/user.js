@@ -101,7 +101,7 @@ class DAOUsers{
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
 
-                let sql = "INSERT INTO friendshiprequests (userRequester, userRequested) VALUES (?, ?)"
+                let sql = "INSERT INTO friendshiprequests(userRequester, userRequested) VALUES (?, ?)"
                 let param = [userId, userRequester]
 
                 connection.query(sql, param, function (err, result) {
@@ -228,8 +228,8 @@ class DAOUsers{
                     connection.release()
                     if(err){
                         callback(new Error("Error de acceso a la base de datos"))
-                    }else if(result){
-                        callback(null, result)
+                    }else if(result.length > 0){
+                        callback(null, result[0])
                     }else{
                         callback(new Error("Base de datos no consistente"))
                     }

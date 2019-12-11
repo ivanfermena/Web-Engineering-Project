@@ -1,15 +1,15 @@
 <nav class="navbar">
-  <a href="https://freecodecamp.org" class="logo">
+  <a href="#" class="logo">
     <img src="/img/icon.png" alt="freeCodeCamp logo">
   </a>
   <ul class="nav-links">
-    <li class="nav-item"><a href="/user/profile/<%= userId %>">Perfil</a></li>
+    <li class="nav-item"><a href="/user/profile/<%= user.id %>">Perfil</a></li>
     <li class="nav-item"><a href="/user/friends">Amigos</a></li>
     <li class="nav-item"><a href="/game/random">Preguntas</a></li>
     <li class="nav-item"><a href="/user/signout">Desconectar</a></li>
     <li class="nav-item">
-      <a href="https://freecodecamp.org" class="logo">
-        <img src="/img/icon.png" alt="freeCodeCamp logo"> 50pts
+      <a href="/user/profile/<%= user.id %>" class="logo">
+        <img src="/user/image/<%= user.id %>" alt="profile image"> <%= user.points %> Points
       </a>
     </li>
   </ul>

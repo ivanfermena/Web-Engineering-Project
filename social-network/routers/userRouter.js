@@ -28,11 +28,7 @@ userRouter.get("/denie/:userId", controller.denieRequest);
 userRouter.get("/requestFriend/:userId", controller.requestFriend);
 
 
-userRouter.get("/search", function (request, response) {
-    response.status(200)
-    response.render("user/friends")
-});
-
+userRouter.get("/search", controller.loadSearchPage);
 userRouter.post("/search", controller.searchUsers);
 
 userRouter.get("/signout", controller.signout);

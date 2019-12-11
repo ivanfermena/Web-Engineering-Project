@@ -57,13 +57,15 @@ app.use("/game", gameRouter)
 
 app.use(function(request, response){
     response.status(404);
-    response.render("general/404", {userId: request.session.currentUser});
+    response.render("general/404", {user: request.session.currentUser});
 })
 
 app.use(function (error, request, response, next) {
     console.log(error)
     response.status(500);
-    response.render("general/500", {userId: request.session.currentUser})
+    let userId = request.session.currentUser.id
+    request.session.destroy()
+    response.render("general/500", {userId: userId})
 })
 
 // APP Listen

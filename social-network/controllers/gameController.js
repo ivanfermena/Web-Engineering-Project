@@ -21,14 +21,14 @@ function randomQuestions(request, response, next) {
             } else if (questionsList.length >= 1) {
                 response.status(200)
                 response.render("game/random", {
-                    userId: request.session.currentUser,
+                    user: request.session.currentUser,
                     questionsList: questionsList
                 })
             } else {
                 response.status(200)
                 response.setFlash("No questions have been added yet.")
                 response.render("game/random", {
-                    userId: request.session.currentUser,
+                    user: request.session.currentUser,
                     questionsList: questionsList
                 })
             }
@@ -37,7 +37,7 @@ function randomQuestions(request, response, next) {
 
 function loadNewQuestion(request, response, next) {
     response.status(200)
-    response.render("game/new_question", { userId: request.session.currentUser })
+    response.render("game/new_question", { user: request.session.currentUser })
 }
 
 function loadQuestion(request, response, next) {
@@ -45,7 +45,7 @@ function loadQuestion(request, response, next) {
     if (questionId === undefined) {
         response.status(400)
         response.setFlash("Question not specified")
-        response.render("game/random", { userId: request.session.currentUser })
+        response.render("game/random", { user: request.session.currentUser })
     }
     else {
         DaoGame.getQuestion(questionId,
@@ -54,7 +54,7 @@ function loadQuestion(request, response, next) {
                     console.log(err)
                     next(err)
                 } else if (question.text != "") {
-                    DaoGame.getUserAnswer(request.session.currentUser, questionId, function (err, answer) {
+                    DaoGame.getUserAnswer(request.session.currentUser.id, questionId, function (err, answer) {
                         if (err) {
                             next(err)
                         }
@@ -67,7 +67,8 @@ function loadQuestion(request, response, next) {
                             else {
                                 answerText = "No has contestado la pregunta aún."
                             }
-                            let userId = request.session.currentUser
+                            let userId = request.session.currentUser.id
+                            
                             DaoGame.getFriendsAnswers(questionId, userId, function (err, friendsAnswers) {
                                 if (err) {
                                     next(err)
@@ -103,7 +104,7 @@ function loadQuestion(request, response, next) {
                                             response.status(200)
 
                                             response.render("game/question", {
-                                                userId: request.session.currentUser,
+                                                user: request.session.currentUser,
                                                 question: question,
                                                 answer: answerText,
                                                 friends: friends
@@ -113,7 +114,7 @@ function loadQuestion(request, response, next) {
                                 }
                                 else {
                                     response.render("game/question", {
-                                        userId: request.session.currentUser,
+                                        user: request.session.currentUser,
                                         question: question,
                                         answer: answerText,
                                         friends: []
@@ -126,7 +127,7 @@ function loadQuestion(request, response, next) {
                 else {
                     response.status(400)
                     response.setFlash("This question has errors, please, select another one.")
-                    response.render("game/random", { userId: request.session.currentUser })
+                    response.render("game/random", { user: request.session.currentUser })
                 }
             })
     }
@@ -182,7 +183,7 @@ function saveAnswer(request, response, next) {
         response.redirect("game/random")
     }
     else {
-        let userId = request.session.currentUser
+        let userId = request.session.currentUser.id
         let questionId = request.params.questionId
         let answerId = request.body.answers
 
@@ -298,7 +299,7 @@ function loadAnswer(request, response, next) {
                         } else if (answerList.length > 0) {
                             response.status(200)
                             response.render("game/answer", {
-                                userId: request.session.currentUser, question: question,
+                                user: request.session.currentUser, question: question,
                                 answersList: answerList
                             })
                         }
@@ -306,7 +307,7 @@ function loadAnswer(request, response, next) {
                             response.status(200)
                             response.setFlash("No answers created for this question yet.")
                             response.render("game/answer", {
-                                userId: request.session.currentUser, question: question,
+                                user: request.session.currentUser, question: question,
                                 answersList: answerList
                             })
                         }
@@ -351,7 +352,7 @@ function loadGuessPage(request, response, next) {
                                     }
                                     response.status(200)
                                     response.render("game/guess", {
-                                        userId: request.session.currentUser, question: question,
+                                        user: request.session.currentUser, question: question,
                                         friendResId: friendResId, answersList: answerList
                                     })
                                 }
@@ -380,25 +381,50 @@ function saveGuess(request, response, next) {
                 next(err)
             }
             else {
-                let userId = request.session.currentUser
+                let currentUser = request.session.currentUser
                 let correct = false
                 if (friendAnswer.text == answer) {
                     correct = true
+                    DaoGame.updatePoints(currentUser.id, currentUser.points + 50, function(err, points){
+                        if(err){
+                            next(err)
+                        }
+                        else {
+                            request.session.currentUser.points = points
+                            DaoGame.insertGuess(currentUser.id, friendResId, correct, function (err, inserted) {
+                                if (err) {
+                                    next(err)
+                                }
+                                else if(inserted){
+                                    response.status(200)
+                                    response.redirect("/game/question/" + questionId)
+                                }
+                                else {
+                                    response.status(400)
+                                    response.setFlash("Cannot create the guess")
+                                    response.redirect("/game/question/" + questionId)
+                                }
+                            })
+                        }
+                    })
                 }
-                DaoGame.insertGuess(userId, friendResId, correct, function (err, inserted) {
-                    if (err) {
-                        next(err)
-                    }
-                    else if(inserted){
-                        response.status(200)
-                        response.redirect("/game/question/" + questionId)
-                    }
-                    else {
-                        response.status(400)
-                        response.setFlash("Cannot create the guess")
-                        response.redirect("/game/question/" + questionId)
-                    }
-                })
+                else {
+                    DaoGame.insertGuess(currentUser.id, friendResId, correct, function (err, inserted) {
+                        if (err) {
+                            next(err)
+                        }
+                        else if(inserted){
+                            response.status(200)
+                            response.redirect("/game/question/" + questionId)
+                        }
+                        else {
+                            response.status(400)
+                            response.setFlash("Cannot create the guess")
+                            response.redirect("/game/question/" + questionId)
+                        }
+                    })
+                }
+                
             }
 
         })

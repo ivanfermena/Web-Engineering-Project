@@ -398,7 +398,44 @@ class DAOGame {
                     }
                 })
             }
-            
+
+        })
+    }
+
+    updatePoints(userId, points, callback) {
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err)
+                callback(new Error("Error de conexión a la BD"), null)
+            }
+            else {
+                let sql = "UPDATE users SET points = ? WHERE userId = ?"
+                let params = [points, userId]
+
+                connection.query(sql, params, function (err, result) {
+                    if (err) {
+                        connection.release()
+                        console.log(err)
+                        callback(new Error("Error en la consulta"), null)
+                    } else if (result.affectedRows > 0) {
+                        sql = "SELECT users.points FROM users WHERE userId = ?"
+                        params = [userId]
+                        connection.query(sql, params, function (err, result) {
+                            connection.release()
+                            if (err) {
+                                console.log(err)
+                                callback(new Error("Error en la consulta"), null)
+                            }
+                            else {
+                                callback(null, result[0].points)
+                            }
+                        })
+                    }
+                    else {
+                        callback(new Error("Base de datos no consistente"), null)
+                    }
+                })
+            }
         })
     }
 }
