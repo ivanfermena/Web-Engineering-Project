@@ -263,9 +263,9 @@ class DAOGame {
                         callback(new Error("Fallo en la consulta a BD"))
                     }
                     else {
-                        let answers = [] 
+                        let answers = []
                         friendsAnswers.forEach(answer => {
-                            let obj = { 
+                            let obj = {
                                 resId: answer.resId,
                                 friendId: answer.friendId,
                                 friend: answer.friend
@@ -313,18 +313,18 @@ class DAOGame {
 
     }
 
-    getGuessingAnswers(questionId,callback){
-        this.pool.getConnection(function(err,connection){
-            if(err){
+    getGuessingAnswers(questionId, callback) {
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
                 console.log(err)
                 callback(new Error("Error de conexión a la BD"), null)
             }
             else {
                 let sql = "SELECT * FROM answers WHERE questionId = ? ORDER BY RAND() LIMIT 5"
                 let param = [questionId]
-                connection.query(sql, params, function(err, answers){
+                connection.query(sql, param, function (err, answers) {
                     connection.release()
-                    if(err){
+                    if (err) {
                         console.log(err)
                         callback(new Error("Error al realizar la consulta a BD"), null)
                     }
@@ -332,7 +332,7 @@ class DAOGame {
                         let answerList = []
                         answers.forEach(answer => {
                             let obj = {
-                                answerId: answer.answerId,
+                                id: answer.answerId,
                                 text: answer.text
                             }
                             answerList.push(obj)
@@ -344,31 +344,62 @@ class DAOGame {
         })
     }
 
-    getFriendAnswer(resId, callback){
-        this.pool.getConnection(function(err,connection){
-            if(err){
+    getFriendAnswer(resId, callback) {
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
                 console.log(err)
                 callback(new Error("Error de conexión a la BD"), null)
             }
             else {
                 let sql = "SELECT answers.answerId, answers.text FROM " +
-                "answers JOIN usersresponses ON " +
-                "answers.answerId = usersresponses.answerId " +
-                "WHERE usersresponses.responseId = ?"
+                    "answers JOIN usersresponses ON " +
+                    "answers.answerId = usersresponses.answerId " +
+                    "WHERE usersresponses.responseId = ?"
                 let param = [resId]
 
-                connection.query(sql, param, function(err, answer){
-                    if(err){
+                connection.query(sql, param, function (err, answer) {
+                    connection.release()
+                    if (err) {
                         console.log(err)
                         callback(new Error("Error en la consulta"), null)
                     }
                     else {
-                        let friendAnswer = {answerId: answer.answerId,
-                                            text: answer.text}
+                        let friendAnswer = {
+                            id: answer[0].answerId,
+                            text: answer[0].text
+                        }
                         callback(null, friendAnswer)
                     }
                 })
             }
+        })
+    }
+
+    insertGuess(userId, friendResId, correct, callback) {
+        this.pool.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err)
+                callback(new Error("Error de conexión a la BD"), null)
+            }
+            else {
+                let sql = "INSERT INTO usersguesses(userId, responseId, correct) " +
+                    "VALUES(?, ?, ?)"
+                let params = [userId, friendResId, correct]
+
+                connection.query(sql, params, function (err, result) {
+                    connection.release()
+                    if (err) {
+                        console.log(err)
+                        callback(new Error("Error en la consulta"), null)
+                    } else if (result.affectedRows > 0) {
+                        callback(null, true)
+                    } else {
+                        callback(new Error("Base de datos no consistente"))
+                    }
+                })
+            }
+            
+        })
     }
 }
 

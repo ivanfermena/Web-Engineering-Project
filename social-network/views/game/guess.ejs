@@ -17,10 +17,12 @@
     <main>
     <h1><%= question.text %></h1>
     <div class="sections">
-      <form action="/game/guess/<%= question.questionId %>" method="POST">
+      <form action="/game/question/<%= question.questionId %>/guess/<%= friendResId %>" method="POST">
         <ul class="list_questions">
           <% answersList.forEach(answer => { %>
-          <li><input type="radio" name="answers" value="<%= answer.id %>" ><%= answer.text %> </li>
+          <li>
+            <input type="radio" name="answer" value="<%= answer.text %>" ><%= answer.text %> 
+          </li>
           <% }) %>
         </ul>
         <div class="button_cont">

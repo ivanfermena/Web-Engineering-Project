@@ -6,6 +6,7 @@ const path = require('path')
 const config = require('../config.js')
 const daoGame = new require('./../models/game')
 
+//TODO cambiar esto para que el dao sea Singleton
 const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoGame = new daoGame(pool)
@@ -77,18 +78,18 @@ function loadQuestion(request, response) {
                                             next(err)
                                         }
                                         else {
-                                            
+
                                             let friends = []
                                             friendsAnswers.forEach(response => {
                                                 let friend = { name: response.friend, id: response.friendId }
-                                                let g = userGuesses.filter(guess => 
-                                                    guess.responseId === response.resId    
+                                                let g = userGuesses.filter(guess =>
+                                                    guess.responseId === response.resId
                                                 )
                                                 if (g.length == 0) {
                                                     friend.guess = null
                                                     friend.resId = response.resId
                                                 }
-                                                
+
                                                 else if (g[0].correct) {
                                                     friend.guess = true
                                                 }
@@ -98,9 +99,9 @@ function loadQuestion(request, response) {
 
                                                 friends.push(friend)
                                             })
-                                            
+
                                             response.status(200)
-                                            
+
                                             response.render("game/question", {
                                                 userId: request.session.currentUser,
                                                 question: question,
@@ -315,13 +316,13 @@ function loadAnswer(request, response) {
     }
 }
 
-function loadGuessPage(req, res){
-    let questionId = req.params.questionId
-    let friendResId = req.params.friendResId
+function loadGuessPage(request, response) {
+    let questionId = request.params.questionId
+    let friendResId = request.params.friendResId
     if (questionId === undefined || friendResId === undefined) {
         response.status(400)
         response.setFlash("Answer can not be guessed")
-        response.redirect("/game/question/"+questionId)
+        response.redirect("/game/random")
     }
     else {
         DaoGame.getQuestion(questionId, function (err, question) {
@@ -329,38 +330,80 @@ function loadGuessPage(req, res){
                 next(err)
             }
             else {
-                //por dentro puedo hacer SI NO EXISTE YA, un JOIN hasta el answer y obtener el text
-                                                                                                                                                                                                                                                )
-                // Despues se lo añado a lo q                                           ue devuelva este, que debe dar random
-                DaoGame.getGuessingAnswers(questionId,                                                                                                                                                                                  
-                    function (err, answerList) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+                DaoGame.getGuessingAnswers(questionId,
+                    function (err, answerList) {
                         console.log(answerList)
                         if (err) {
                             next(err)
-                        } else if (answerList.length > 0) {
-                            DaoGame.getFriendAnswer(resId, function(err, friendAnswer){
-                                if(err){
+                        } else {
+                            DaoGame.getFriendAnswer(friendResId, function (err, friendAnswer) {
+                                if (err) {
                                     next(err)
                                 }
-                                else{
-                                    if((answerList.filter(answer => answer.text == friendAnswer.text)).length == 0){
+                                else {
+                                    if ((answerList.filter(answer => answer.text == friendAnswer.text)).length == 0) {
                                         answerList.pop()
                                         answerList.push(friendAnswer)
+
+                                        //shuffle
+                                        answerList = answerList.sort(() => Math.random() - 0.5)
                                     }
                                     response.status(200)
                                     response.render("game/guess", {
-                                    userId: request.session.currentUser, question: question,
-                                    answersList: answerList
-                            })
+                                        userId: request.session.currentUser, question: question,
+                                        friendResId: friendResId, answersList: answerList
+                                    })
                                 }
                             })
-                            
+
                         }
                     })
 
-                      
+
             }
         })
+    }
+}
+function saveGuess(request, response) {
+    let questionId = request.params.questionId
+    let friendResId = request.params.friendResId
+    let answer = request.body.answer
+    if (questionId === undefined || friendResId === undefined || answer === undefined) {
+        response.status(400)
+        response.setFlash("Answer can not be guessed")
+        response.redirect("/game/random/")
+    }
+    else {
+        DaoGame.getFriendAnswer(friendResId, function (err, friendAnswer) {
+            if (err) {
+                next(err)
+            }
+            else {
+                let userId = request.session.currentUser
+                let correct = false
+                if (friendAnswer.text == answer) {
+                    correct = true
+                }
+                DaoGame.insertGuess(userId, friendResId, correct, function (err, inserted) {
+                    if (err) {
+                        next(err)
+                    }
+                    else if(inserted){
+                        response.status(200)
+                        response.redirect("/game/question/" + questionId)
+                    }
+                    else {
+                        response.status(400)
+                        response.setFlash("Cannot create the guess")
+                        response.redirect("/game/question/" + questionId)
+                    }
+                })
+            }
+
+        })
+
+
     }
 }
 
@@ -370,5 +413,7 @@ module.exports = {
     newQuestion: newQuestion,
     loadAnswer: loadAnswer,
     loadQuestion: loadQuestion,
-    saveAnswer: saveAnswer
+    loadGuessPage: loadGuessPage,
+    saveAnswer: saveAnswer,
+    saveGuess: saveGuess
 }
