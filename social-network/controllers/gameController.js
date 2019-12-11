@@ -98,6 +98,7 @@ function loadQuestion(request, response) {
 
                                                 friends.push(friend)
                                             })
+                                            
                                             response.status(200)
                                             
                                             response.render("game/question", {
@@ -309,6 +310,55 @@ function loadAnswer(request, response) {
                             })
                         }
                     })
+            }
+        })
+    }
+}
+
+function loadGuessPage(req, res){
+    let questionId = req.params.questionId
+    let friendResId = req.params.friendResId
+    if (questionId === undefined || friendResId === undefined) {
+        response.status(400)
+        response.setFlash("Answer can not be guessed")
+        response.redirect("/game/question/"+questionId)
+    }
+    else {
+        DaoGame.getQuestion(questionId, function (err, question) {
+            if (err) {
+                next(err)
+            }
+            else {
+                //por dentro puedo hacer SI NO EXISTE YA, un JOIN hasta el answer y obtener el text
+                                                                                                                                                                                                                                                )
+                // Despues se lo añado a lo q                                           ue devuelva este, que debe dar random
+                DaoGame.getGuessingAnswers(questionId,                                                                                                                                                                                  
+                    function (err, answerList) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                        console.log(answerList)
+                        if (err) {
+                            next(err)
+                        } else if (answerList.length > 0) {
+                            DaoGame.getFriendAnswer(resId, function(err, friendAnswer){
+                                if(err){
+                                    next(err)
+                                }
+                                else{
+                                    if((answerList.filter(answer => answer.text == friendAnswer.text)).length == 0){
+                                        answerList.pop()
+                                        answerList.push(friendAnswer)
+                                    }
+                                    response.status(200)
+                                    response.render("game/guess", {
+                                    userId: request.session.currentUser, question: question,
+                                    answersList: answerList
+                            })
+                                }
+                            })
+                            
+                        }
+                    })
+
+                      
             }
         })
     }

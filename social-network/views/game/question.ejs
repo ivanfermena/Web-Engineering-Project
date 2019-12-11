@@ -33,7 +33,7 @@
                   <%= friend.name %>
                 </a>
                 <% if(friend.guess == null){ %>
-                  <div class="button_cont"><a class="button_control" href="/game/guess/<%= friend.resId %>">ADIVINAR</a>
+                  <div class="button_cont"><a class="button_control" href="/game/question/<%= question.questionId %>/guess/<%= friend.resId %>">ADIVINAR</a>
                 <% } else if(friend.guess){%>
                   <div class="text-question acierto">Has acertado</div>
                 <% } else{ %>

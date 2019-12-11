@@ -15,4 +15,6 @@ gameRouter.post("/answer/:questionId", controller.saveAnswer)
 
 gameRouter.get("/question/:questionId", controller.loadQuestion)
 
+gameRouter.get("/question/:questionId/guess/:friendResId", controller.loadGuessPage)
+
 module.exports = gameRouter;

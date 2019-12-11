@@ -89,6 +89,7 @@ class DAOGame {
         })
     }
 
+    //SOBRE JOIN CON QUESTION
     getQuestionAnswers(questionId, callback) {
         this.pool.getConnection(function (err, connection) {
             if (err) {
@@ -310,6 +311,64 @@ class DAOGame {
             }
         })
 
+    }
+
+    getGuessingAnswers(questionId,callback){
+        this.pool.getConnection(function(err,connection){
+            if(err){
+                console.log(err)
+                callback(new Error("Error de conexión a la BD"), null)
+            }
+            else {
+                let sql = "SELECT * FROM answers WHERE questionId = ? ORDER BY RAND() LIMIT 5"
+                let param = [questionId]
+                connection.query(sql, params, function(err, answers){
+                    connection.release()
+                    if(err){
+                        console.log(err)
+                        callback(new Error("Error al realizar la consulta a BD"), null)
+                    }
+                    else {
+                        let answerList = []
+                        answers.forEach(answer => {
+                            let obj = {
+                                answerId: answer.answerId,
+                                text: answer.text
+                            }
+                            answerList.push(obj)
+                        })
+                        callback(null, answerList)
+                    }
+                })
+            }
+        })
+    }
+
+    getFriendAnswer(resId, callback){
+        this.pool.getConnection(function(err,connection){
+            if(err){
+                console.log(err)
+                callback(new Error("Error de conexión a la BD"), null)
+            }
+            else {
+                let sql = "SELECT answers.answerId, answers.text FROM " +
+                "answers JOIN usersresponses ON " +
+                "answers.answerId = usersresponses.answerId " +
+                "WHERE usersresponses.responseId = ?"
+                let param = [resId]
+
+                connection.query(sql, param, function(err, answer){
+                    if(err){
+                        console.log(err)
+                        callback(new Error("Error en la consulta"), null)
+                    }
+                    else {
+                        let friendAnswer = {answerId: answer.answerId,
+                                            text: answer.text}
+                        callback(null, friendAnswer)
+                    }
+                })
+            }
     }
 }
 
