@@ -280,13 +280,14 @@ class DAOUsers{
         })
     }
 
-    getUsersByName(name, callback){
+    getUsersByName(name, idUserLogin, callback){
+
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(new Error("Error de conexión a la base de datos"))
             }else{
-                let sql = "SELECT * FROM users WHERE name LIKE ?"
-                let param = ['%' + name + '%']
+                let sql = "SELECT users.* FROM users WHERE users.name LIKE ? AND users.userId <> ?"
+                let param = ['%' + name + '%', idUserLogin, idUserLogin]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){

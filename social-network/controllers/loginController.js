@@ -20,13 +20,13 @@ function loadRegisterPage(request, response) {
 }
 
 function isUserCorrect(request, response, next) {
+
     if (request.body.user_email == '' || request.body.user_password == '') {
         response.status(400)
         response.setFlash("Email or password field not filled")
         response.redirect("/login")
     }
-    else {
-
+    else{ 
         let userRequested = {
             email: request.body.user_email,
             password: request.body.user_password
@@ -47,11 +47,11 @@ function isUserCorrect(request, response, next) {
                 response.redirect("/user/profile/"+userId)
             }
         })
-
     }
 }
 
 function newUser(request, response, next) {
+
 
     if (request.body.user_email == '' || request.body.user_password == '' || request.body.user_name == '' ||
         request.body.user_genre == '' || request.body.user_birthday == '') {

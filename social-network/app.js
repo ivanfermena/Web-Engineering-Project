@@ -4,6 +4,7 @@ const express = require('express')
 const path = require('path')
 const mysql = require('mysql')
 const bodyParser = require("body-parser")
+const expressValidator = require("express-validator");
 
 const app = express()
 
@@ -20,7 +21,7 @@ const sessionStore = new MySQLStore({
     host: "localhost",
     user: "root",
     password: "",
-    database: "facefluff"  
+    database: "exam-social"  
 });
 
 const middlewareSession = session({
@@ -48,11 +49,6 @@ app.use(accessMiddleware)
 
 const userRouter = require("./routers/userRouter")
 app.use("/user", userRouter)
-
-// Random question
-const gameRouter = require("./routers/gameRouter")
-app.use("/game", gameRouter)
-
 
 
 app.use(function(request, response){

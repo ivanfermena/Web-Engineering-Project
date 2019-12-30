@@ -1,0 +1,12 @@
+- Mejorar vistas mas serias
+- [X] Quitar puntos parte superior
+- [X] Busqueda por nombre no aparezcas tu
+- Busqueda por nombre solo aparezcan quienes no son tus amigos
+- Busqueda por nombre que no seleccione aquellos que has enviado peticion ya 
+- Gestionar validaciones de formularios
+- Gestion de errores 500 cuando no encuentre base de datos
+
+
+- Pensar como pregunta de correo manuel
+- Practicar dejar de ser amigo
+- 

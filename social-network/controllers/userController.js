@@ -211,8 +211,9 @@ function searchUsers(request, response, next) {
     }
     else {
         let name = request.body.name_search
+        let idUserLogin = request.session.currentUser.id
 
-        DaoUser.getUsersByName(name,
+        DaoUser.getUsersByName(name, idUserLogin,
             function (err, usersList) {
                 if (err) {
                     next(err)
