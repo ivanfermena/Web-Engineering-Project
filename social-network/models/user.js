@@ -150,6 +150,9 @@ class DAOUsers{
         })
     }
 
+    //El friendshipRequest puede ser A -> B y B -> A, por eso se eliminan ambos.
+    //Se inserta amistad A -> B y B -> A para agilizar la busqueda de amigos pero
+    // se debe tener en cuenta si hubiese que borrar amistad.
     acceptFriendsRequest(userId, userRequester, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
@@ -192,15 +195,39 @@ class DAOUsers{
         })
     }
 
-    modifyUser(email, password, name, genre, image, birthday, userId, callback){
+    modifyUser(user, userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(err)
             }else{
-                let sql = "UPDATE users SET email = ?, password = ?, name = ?, genre = ?, birthday = ?, image = ? where userId = ?"
-                let param = [email, password, name, genre, birthday, image, userId]
-
-                connection.query(sql, param, function (err, result) {
+                let sql = "UPDATE users SET"
+                let params = []
+                if(user.email !== undefined){
+                    sql = sql.concat(" email = ?,")
+                    params.push(user.email)
+                }
+                if(user.password !== undefined){
+                    sql = sql.concat(" password = ?,")
+                    params.push(user.password)
+                }
+                if(user.name !== undefined){
+                    sql = sql.concat(" name = ?,")
+                    params.push(user.name)
+                }
+                if(user.genre !== undefined){
+                    sql = sql.concat(" genre = ?,")
+                    params.push(user.genre)
+                }
+                if(user.birthday !== undefined){
+                    sql = sql.concat(" birthday = ?,")
+                    params.push(user.birthday)
+                }
+                //elimina la ultima coma
+                sql = sql.slice(0, -1)
+                sql = sql.concat(" where userId = ?")
+                params.push(userId)
+                
+                connection.query(sql, params, function (err, result) {
                     connection.release()
                     if(err){
                         callback(err)

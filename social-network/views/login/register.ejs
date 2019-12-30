@@ -35,12 +35,15 @@
           <% } %>
           <input type="text" name="user_name">
           <div id="form_genre">
-            Sexo:
+            Sexo:*
+            <%if (errores != 0 && errores.user_genre) {%>
+              <span class="err-field"> <%=errores.user_genre.msg%></span>
+            <% } %>
             <input type="radio" name="user_genre" value="hombre"> Hombre
             <input type="radio" name="user_genre" value="mujer"> Mujer
             <input type="radio" name="user_genre" value="otro"> Otro
           </div>
-          Fecha de nacimiento: 
+          Fecha de nacimiento:* 
           <%if (errores != 0 && errores.user_birthday) {%>
             <span class="err-field"> <%=errores.user_birthday.msg%></span>
           <% } %>

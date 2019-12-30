@@ -24,8 +24,10 @@ function getUser(request, response, next) {
                     request.session.currentUser.points = user.points
                     currentUser = true
                 }
-                response.render("users/profile", {user: request.session.currentUser,
-                     userInfo: user, modify: currentUser })
+                response.render("users/profile", {
+                    user: request.session.currentUser,
+                    userInfo: user, modify: currentUser
+                })
             } else {
                 response.status(404)
                 response.setFlash("User does not exists")
@@ -158,42 +160,73 @@ function requestFriend(request, response, next) {
 
 function loadModifyPage(request, response, next) {
     response.status(200)
-    response.render("users/modify", {user: request.session.currentUser})
+    response.render("users/modify", { user: request.session.currentUser, errores: 0 })
 }
 
 function modifyUser(request, response, next) {
-    if (request.body.user_email == '' || request.body.user_password == '' || request.body.user_name == '' ||
-        request.body.user_genre == '' || request.body.user_birthday == '') {
-        response.status(400)
-        response.setFlash("Some field not filled")
-        response.redirect("/user/modify")
+    if(request.body.user_email != ''){
+        request.checkBody('user_email').isEmail().withMessage('Formato de email incorrecto')
     }
-    else {
-        let userRequested = {
-            email: request.body.user_email,
-            password: request.body.user_password,
-            name: request.body.user_name,
-            genre: request.body.user_genre,
-            birthday: request.body.user_birthday,
-            image: null
-        }
-
-        if (request.file) {
-            userRequested.image = request.file.buffer
-        }
-
-        DaoUser.modifyUser(userRequested.email, userRequested.password,
-            userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday,
-            request.session.currentUser.id,
-            function (err, user) {
-                if (err) {
-                    next(err)
-                } else if (user) {
-                    response.status(200)
-                    response.redirect(`/user/profile/`+request.session.currentUser.id)
-                }
-            })
+    if(request.body.user_name != ''){
+        request.checkBody('user_name').isAlphanumeric().withMessage('Nombre con caracteres no válidos')
     }
+
+    request.getValidationResult().then(function (result) {
+        if (!result.isEmpty()) {
+            response.status(400)
+            response.render("users/modify", {user: request.session.currentUser, 
+                errores: result.mapped() })
+        }
+        else {
+            let userRequested = {}
+            let modifiedFields = 0
+            console.log(request.body)
+            if (request.file) {
+                userRequested.image = request.file.buffer
+                modifiedFields += 1
+            }
+
+            if (request.body.user_email != '') {
+                userRequested.email = request.body.user_email
+                modifiedFields += 1
+            }
+            if (request.body.user_password != '') {
+                userRequested.password = request.body.user_password
+                modifiedFields += 1
+            }
+            if (request.body.user_name != '') {
+                userRequested.name = request.body.user_name
+                modifiedFields += 1
+            }
+            //es el unico que aparece como undefinded y no ''
+            if (request.body.user_genre !== undefined) {
+                userRequested.genre = request.body.user_genre
+                modifiedFields += 1
+            }
+            if (request.body.user_birthday != '') {
+                userRequested.birthday = request.body.user_birthday
+                modifiedFields += 1
+            }
+            
+            if(modifiedFields > 0){
+            DaoUser.modifyUser(userRequested,
+                request.session.currentUser.id,
+                function (err, user) {
+                    if (err) {
+                        next(err)
+                    } else if (user) {
+                        response.status(200)
+                        response.redirect(`/user/profile/` + request.session.currentUser.id)
+                    }
+                })
+            }
+            else{
+                response.status(304)
+                response.setFlash("No fields modified")
+                response.redirect("/user/modify")
+            }
+        }
+    })
 }
 
 function loadSearchPage(request, response, next) {
@@ -218,13 +251,17 @@ function searchUsers(request, response, next) {
                     next(err)
                 } else if (usersList.length >= 1) {
                     response.status(200)
-                    response.render("users/search", {user: request.session.currentUser,
-                         name: name, usersList: usersList })
+                    response.render("users/search", {
+                        user: request.session.currentUser,
+                        name: name, usersList: usersList
+                    })
                 } else {
                     response.status(200)
                     response.setFlash("No users found")
-                    response.render("users/search", { user: request.session.currentUser,
-                        name: name, usersList: [] })
+                    response.render("users/search", {
+                        user: request.session.currentUser,
+                        name: name, usersList: []
+                    })
                 }
             })
     }

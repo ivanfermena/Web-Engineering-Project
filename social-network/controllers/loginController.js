@@ -25,13 +25,13 @@ function isUserCorrect(request, response, next) {
     request.checkBody('user_email').notEmpty().withMessage('Email obligatorio')
     request.checkBody('user_password').notEmpty().withMessage('Contraseña obligatoria')
 
-    request.getValidationResult().then(function(result) {
+    request.getValidationResult().then(function (result) {
         if (!result.isEmpty()) {
             response.status(400)
-            response.setFlash("Email or password field not filled")
+            response.setFlash("Incorrect email or password")
             response.render("login/login", { errores: result.mapped() })
         }
-        else{ 
+        else {
             let userRequested = {
                 email: request.body.user_email,
                 password: request.body.user_password
@@ -48,8 +48,8 @@ function isUserCorrect(request, response, next) {
                 }
                 else {
                     response.status(200)
-                    request.session.currentUser = {id: userId, points: 0} 
-                    response.redirect("/user/profile/"+userId)
+                    request.session.currentUser = { id: userId, points: 0 }
+                    response.redirect("/user/profile/" + userId)
                 }
             })
         }
@@ -58,14 +58,16 @@ function isUserCorrect(request, response, next) {
 
 function newUser(request, response, next) {
 
-    request.checkBody('user_email').isEmail().withMessage('Formato de email incorrecto')
     request.checkBody('user_email').notEmpty().withMessage('Email obligatorio')
+    request.checkBody('user_email').isEmail().withMessage('Formato de email incorrecto')
     request.checkBody('user_password').notEmpty().withMessage('Contraseña obligatoria')
     request.checkBody('user_name').notEmpty().withMessage('Nombre obligatorio')
-    request.checkBody('user_name').isAlphanumeric().withMessage('Nombre con caracteres raros')
-    request.checkBody('user_birthday').isBefore().withMessage('Necesaria fecha antigua')
+    request.checkBody('user_name').isAlphanumeric().withMessage('Nombre con caracteres no válidos')
+    request.checkBody('user_genre').notEmpty().withMessage('Género obligatorio')
+    request.checkBody('user_birthday').notEmpty().withMessage('Fecha de nacimiento obligatoria')
+    request.checkBody('user_birthday').isBefore().withMessage('Necesaria fecha anterior')
 
-    request.getValidationResult().then(function(result) {
+    request.getValidationResult().then(function (result) {
         if (!result.isEmpty()) {
             response.status(400)
             response.setFlash("Some field not filled")
@@ -85,19 +87,17 @@ function newUser(request, response, next) {
                 userRequested.image = request.file.buffer
             }
 
-            DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, userRequested.genre, userRequested.image, userRequested.birthday,
+            DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, 
+                userRequested.genre, userRequested.image, userRequested.birthday,
                 function (err, userId) {
                     if (err) {
                         next(err)
-                    } else if (userId > 0) {
+                    } 
+                    else if (userId > 0) {
                         response.status(200)
-                        request.session.currentUser = {id: userId, points: 0}
-                        
-                        response.redirect('/user/profile/'+userId)
-                    } else {
-                        response.status(400)
-                        response.setFlash("Check fields, and retry")
-                        response.rendirect("/login/register")
+                        request.session.currentUser = { id: userId, points: 0 }
+
+                        response.redirect('/user/profile/' + userId)
                     }
                 })
         }
