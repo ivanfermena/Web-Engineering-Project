@@ -22,8 +22,17 @@
       <div id="form_panel">
         <%- include("./../general/flash") %>
         <form action="/login" method="POST">
-          Email: <input type="text" name="user_email">
-          Password: <input type="password" name="user_password">
+          Email:
+          <%if (errores != 0 && errores.user_email) {%>
+            <span class="err-field"> <%=errores.user_email.msg%></span>
+          <% } %>
+          <input type="text" name="user_email">
+          
+          Password: 
+          <%if (errores != 0 && errores.user_password) {%>
+            <span class="err-field"> <%=errores.user_password.msg%></span>
+          <% } %>
+          <input type="password" name="user_password">
           <input class="button_control" type="submit" value="Conectar">
         </form>
       </div>

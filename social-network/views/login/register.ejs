@@ -19,17 +19,34 @@
       <%- include("./../general/flash") %>
       <div id="main_panel">
         <form action="/login/register" method="POST" enctype="multipart/form-data">
-          Email: <input type="text" name="user_email">
-          Password: <input type="password" name="user_password">
-          Nombre completo: <input type="text" name="user_name">
+          Email:* 
+          <%if (errores != 0 && errores.user_email) {%>
+            <span class="err-field"> <%=errores.user_email.msg%></span>
+          <% } %>
+          <input type="text" name="user_email">
+          Password:* 
+          <%if (errores != 0 && errores.user_password) {%>
+            <span class="err-field"> <%=errores.user_password.msg%></span>
+          <% } %>
+          <input type="password" name="user_password">
+          Nombre:* 
+          <%if (errores != 0 && errores.user_name) {%>
+            <span class="err-field"> <%=errores.user_name.msg%></span>
+          <% } %>
+          <input type="text" name="user_name">
           <div id="form_genre">
             Sexo:
             <input type="radio" name="user_genre" value="hombre"> Hombre
             <input type="radio" name="user_genre" value="mujer"> Mujer
             <input type="radio" name="user_genre" value="otro"> Otro
           </div>
-          Fecha de nacimiento: <input type="date" name="user_birthday">
-          Imagen de perfil: <input type="file" name="user_img">
+          Fecha de nacimiento: 
+          <%if (errores != 0 && errores.user_birthday) {%>
+            <span class="err-field"> <%=errores.user_birthday.msg%></span>
+          <% } %>
+          <input type="date" name="user_birthday">
+          Imagen de perfil: 
+          <input type="file" name="user_img" accept=".jpg, .jpeg, .png">
           <input type="submit" value="Conectar" class="button_control">
         </form>
       </div>

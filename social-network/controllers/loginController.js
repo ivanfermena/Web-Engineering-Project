@@ -5,26 +5,30 @@ const mysql = require('mysql')
 const config = require('../config.js')
 const daoUser = require('./../models/user')
 
+const { check, validationResult } = require('express-validator');
+
 const pool = mysql.createPool(config.mysqlConfig)
 
 const DaoUser = new daoUser(pool)
 
 function loadLoginPage(request, response) {
     response.status(200)
-    response.render("login/login")
+    response.render("login/login", { errores: 0 })
 }
 
 function loadRegisterPage(request, response) {
     response.status(200)
-    response.render("login/register");
+    response.render("login/register", { errores: 0 });
 }
 
 function isUserCorrect(request, response, next) {
 
-    if (request.body.user_email == '' || request.body.user_password == '') {
+    const errors = validationResult(request)
+
+    if (!errors.isEmpty()) {
         response.status(400)
         response.setFlash("Email or password field not filled")
-        response.redirect("/login")
+        response.render("login/login", { errores: errors.mapped() })
     }
     else{ 
         let userRequested = {
@@ -52,12 +56,13 @@ function isUserCorrect(request, response, next) {
 
 function newUser(request, response, next) {
 
+    const errors = validationResult(request)
 
-    if (request.body.user_email == '' || request.body.user_password == '' || request.body.user_name == '' ||
-        request.body.user_genre == '' || request.body.user_birthday == '') {
+    if (!errors.isEmpty()) {
         response.status(400)
         response.setFlash("Some field not filled")
-        response.redirect("/login/register")
+        console.log(errors.mapped())
+        response.render("login/register", { errores: errors.mapped() })
     }
     else {
         let userRequested = {
