@@ -7,6 +7,7 @@ class DAOUsers{
     }
 
     isUserCorrect(email, password, callback){
+        console.log("dao")
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(err)

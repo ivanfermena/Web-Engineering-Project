@@ -204,7 +204,7 @@ function loadSearchPage(request, response, next) {
 
 function searchUsers(request, response, next) {
 
-    if (request.body.name_search === undefined) {
+    if (request.body.name_search === undefined || request.body.name_search === '') {
         response.status(400)
         response.setFlash("No user specified for be searched")
         response.redirect("/user/friends")

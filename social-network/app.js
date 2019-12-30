@@ -2,7 +2,6 @@
 
 const express = require('express')
 const path = require('path')
-const mysql = require('mysql')
 const bodyParser = require("body-parser")
 const expressValidator = require("express-validator");
 
@@ -21,7 +20,7 @@ const sessionStore = new MySQLStore({
     host: "localhost",
     user: "root",
     password: "",
-    database: "exam-social"  
+    database: "exam-social"
 });
 
 const middlewareSession = session({
@@ -31,7 +30,7 @@ const middlewareSession = session({
     store: sessionStore
 });
 
-app.use(middlewareSession) 
+app.use(middlewareSession)
 app.use(flashMiddleware)
 
 // ROOT
@@ -51,17 +50,17 @@ const userRouter = require("./routers/userRouter")
 app.use("/user", userRouter)
 
 
-app.use(function(request, response){
+app.use(function (request, response) {
     response.status(404);
-    response.render("general/404", {user: request.session.currentUser});
+    response.render("general/404", { user: request.session.currentUser });
 })
 
-app.use(function (error, request, response, next) {
-    console.log(error)
+app.use(function (error, request, response) {
+    
     response.status(500);
     let userId = request.session.currentUser.id
     request.session.destroy()
-    response.render("general/500", {userId: userId})
+    response.render("general/500", { userId: userId })
 })
 
 // APP Listen
@@ -71,31 +70,39 @@ app.listen(3000, (err) => {
 })
 
 function flashMiddleware(request, response, next) {
-    response.setFlash = function (msg) {
-        request.session.flashMsg = msg;
-        console.log(request.session.flashMsg)
-    };
-    response.locals.getAndClearFlash = function () {
-        if (request.session.flashMsg === undefined){
-            return null
-        }
-        else{
-            let msg = request.session.flashMsg
-            delete request.session.flashMsg
-            return msg
-        }
+    if (request.session === undefined) {
         
+        next(new Error("Unable to connect to the database"))
     }
-    next()
+    else {
+        response.setFlash = function (msg) {
+            request.session.flashMsg = msg;
+            console.log(request.session.flashMsg)
+        };
+        response.locals.getAndClearFlash = function () {
+            if (request.session.flashMsg === undefined) {
+                return null
+            }
+            else {
+                let msg = request.session.flashMsg
+                delete request.session.flashMsg
+                return msg
+            }
+
+        }
+        next()
+    }
 }
-    
+
 function accessMiddleware(request, response, next) {
-    if (request.session.currentUser === undefined) {
+    if (MySQLStore === undefined) {
+        next(new Error("Unable to connect to the database"))
+    }
+    else if (request.session.currentUser === undefined) {
         response.status(401)
         response.setFlash("Forbidden access, please login")
         response.redirect("/login")
     }
-
     else {
         next()
     }
