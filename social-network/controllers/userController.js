@@ -48,7 +48,7 @@ function getFriends(request, response, next) {
             if (err) {
                 next(err)
             } else {
-                DaoUser.getRequestedFriends(userId,
+                DaoUser.getFriendshipRequests(userId,
                     function (err, requestedFriendsList) {
                         if (err) {
                             next(err)
@@ -131,7 +131,6 @@ function denieRequest(request, response, next) {
 function requestFriend(request, response, next) {
     if (request.params.userId === undefined) {
         response.status(400)
-        //TODO configurar flash
         response.setFlash("user requested does not exists")
         response.render("users/friends")
     }

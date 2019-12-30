@@ -58,12 +58,13 @@ app.use(function (request, response) {
     response.render("general/404", { user: request.session.currentUser });
 })
 
-app.use(function (error, request, response) {
-    
+app.use(function (error, request, response, next) {
+    console.log(error)
     response.status(500);
-    let userId = request.session.currentUser.id
-    request.session.destroy()
-    response.render("general/500", { userId: userId })
+    if(request.session !== undefined){
+        request.session.destroy()
+    }
+    response.render("general/500")
 })
 
 // APP Listen

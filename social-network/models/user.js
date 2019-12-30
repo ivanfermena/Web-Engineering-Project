@@ -1,4 +1,3 @@
-const mysql = require("mysql")
 
 class DAOUsers{
 
@@ -7,7 +6,6 @@ class DAOUsers{
     }
 
     isUserCorrect(email, password, callback){
-        console.log("dao")
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(err)
@@ -35,7 +33,8 @@ class DAOUsers{
             if (err) {
                 callback(err)
             }else{
-                let sql = "INSERT INTO users (email, password, name, genre, birthday, image) VALUES (?, ?,?, ?, ?, ?)"
+                let sql = "INSERT INTO users (email, password, name, genre, birthday, image) "+
+                "VALUES (?, ?,?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
                 
                 connection.query(sql, param, function (err, result) {
@@ -53,7 +52,7 @@ class DAOUsers{
         })
     }
 
-    getRequestedFriends(userId, callback){
+    getFriendshipRequests(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(err)
@@ -72,12 +71,12 @@ class DAOUsers{
                         callback(new Error("Error de acceso a la base de datos"))
                     }
                     else{
-                        let requestFriendsList = []
+                        let friendshipRequestsList = []
                         if(result.length == 0){
-                            callback(null, requestFriendsList)
+                            callback(null, friendshipRequestsList)
                         }else{
                             result.forEach(user => {
-                                requestFriendsList.push({
+                                friendshipRequestsList.push({
                                     id: user.userId,
                                     email: user.email,
                                     password: user.password,
@@ -87,7 +86,7 @@ class DAOUsers{
                                     image: user.image
                                 })
                             })
-                            callback(null, requestFriendsList)
+                            callback(null, friendshipRequestsList)
                         }
                     }
                 })
@@ -95,20 +94,20 @@ class DAOUsers{
         })
     }
 
-    newRequestFriend(userId, userRequester, callback){
+    newRequestFriend(userId, userRequested, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(err)
             }else{
 
-                let sql = "INSERT INTO friendshiprequests(userRequester, userRequested) VALUES (?, ?)"
-                let param = [userId, userRequester]
+                let sql = "INSERT INTO friendshiprequests(userRequester, userRequested) "+
+                "VALUES (?, ?)"
+                let param = [userId, userRequested]
 
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }else if(result.affectedRows > 0){
                         callback(null, true)
                     }else{
@@ -124,22 +123,21 @@ class DAOUsers{
             if (err) {
                 callback(err)
             }else{                
-                let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
+                let sql = "DELETE FROM friendshiprequests "+
+                "WHERE userRequester = ? && userRequested = ?"
                 let param1 = [userRequester, userId]
-                let param2 = [userRequester, userId]
-
+                
                 connection.query(sql, param1, function (err, result) {
 
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         if(result.affectedRows == 0){
                             callback(new Error("No existe el usuario"))
                         }else{
                             if(err){
-                                callback(new Error("Error de acceso a la base de datos"))
+                                callback(err)
                             }else if(result.affectedRows > 0){
                                 callback(null, true)
                             }else{
@@ -157,15 +155,15 @@ class DAOUsers{
             if (err) {
                 callback(err)
             }else{                
-                let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
+                let sql = "DELETE FROM friendshiprequests "+
+                "WHERE userRequester = ? && userRequested = ?"
                 let param1 = [userRequester, userId]
-                let param2 = [userRequester, userId]
+                let param2 = [userId, userRequester]
 
                 connection.query(sql, param1, function (err, result) {
 
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         if(result.affectedRows == 0){
@@ -205,8 +203,7 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }else if(result.affectedRows > 0){
                         callback(null, true)
                     }else{
@@ -227,7 +224,7 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }else if(result.length > 0){
                         callback(null, result[0])
                     }else{
@@ -253,8 +250,7 @@ class DAOUsers{
                     connection.release()
 
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         let friendsList = []
@@ -286,15 +282,15 @@ class DAOUsers{
             if (err) {
                 callback(err)
             }else{
-                let sql = "SELECT users.* "+
-                "FROM users LEFT JOIN friendships " +
-                            "ON users.userId <> friendships.friendId "+
-                            "AND friendships.userId = ? "+
-                "JOIN friendshiprequests "+
-                            "ON friendshiprequests.userRequester = ? "+
-                            "AND users.userId <> friendshiprequests.userRequested "+
-                "WHERE users.name LIKE ? AND users.userId <> ?"
-                let param = [idUserLogin, idUserLogin, '%' + name + '%', idUserLogin]
+                //Seria mejor usar un JOIN, sin embargo, no hemos conseguido implementarlo correctamente.
+                let sql = "SELECT users.* FROM users "+ 
+                "WHERE users.userId != ? AND users.name LIKE ? "+
+                    "AND users.userId NOT IN "+
+                    "(SELECT friendships.friendId from friendships WHERE friendships.userId = ?) "+
+                "AND users.userId NOT IN "+
+                    "(SELECT friendshiprequests.userRequested "+
+                    "from friendshiprequests WHERE friendshiprequests.userRequester = ?)"
+                let param = [idUserLogin, '%' + name + '%', idUserLogin, idUserLogin]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
@@ -335,8 +331,7 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         if(result[0].image == null){
