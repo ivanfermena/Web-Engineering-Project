@@ -9,15 +9,14 @@ class DAOUsers{
     isUserCorrect(email, password, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
                 let sql = "SELECT * FROM users WHERE email = ? AND password = ?"
                 let param = [email, password]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }else if(result.length >= 1){
                         callback(null, result[0].userId)
                     }else if(result.length == 0){
@@ -33,7 +32,7 @@ class DAOUsers{
     newUser(email, password, name, genre, image, birthday, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
                 let sql = "INSERT INTO users (email, password, name, genre, birthday, image) VALUES (?, ?,?, ?, ?, ?)"
                 let param = [email, password, name, genre, birthday, image]
@@ -56,7 +55,7 @@ class DAOUsers{
     getRequestedFriends(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
 
                 let sql = "SELECT users.* FROM users JOIN friendshiprequests " +
@@ -98,7 +97,7 @@ class DAOUsers{
     newRequestFriend(userId, userRequester, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
 
                 let sql = "INSERT INTO friendshiprequests(userRequester, userRequested) VALUES (?, ?)"
@@ -122,7 +121,7 @@ class DAOUsers{
     denieFriendshipRequest(userId, userRequester, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{                
                 let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
                 let param1 = [userRequester, userId]
@@ -155,7 +154,7 @@ class DAOUsers{
     acceptFriendsRequest(userId, userRequester, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{                
                 let sql = "DELETE FROM friendshiprequests WHERE userRequester = ? && userRequested = ?"
                 let param1 = [userRequester, userId]
@@ -197,7 +196,7 @@ class DAOUsers{
     modifyUser(email, password, name, genre, image, birthday, userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
                 let sql = "UPDATE users SET email = ?, password = ?, name = ?, genre = ?, birthday = ?, image = ? where userId = ?"
                 let param = [email, password, name, genre, birthday, image, userId]
@@ -220,7 +219,7 @@ class DAOUsers{
     getUser(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
                 let sql = "SELECT * FROM users WHERE userId = ?"
                 let param = [userId]
@@ -241,7 +240,7 @@ class DAOUsers{
     getFriends(userId, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
 
                 let sql = "SELECT users.* FROM users JOIN friendships " +
@@ -284,15 +283,21 @@ class DAOUsers{
 
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
-                let sql = "SELECT users.* FROM users WHERE users.name LIKE ? AND users.userId <> ?"
-                let param = ['%' + name + '%', idUserLogin, idUserLogin]
+                let sql = "SELECT users.* "+
+                "FROM users LEFT JOIN friendships " +
+                            "ON users.userId <> friendships.friendId "+
+                            "AND friendships.userId = ? "+
+                "JOIN friendshiprequests "+
+                            "ON friendshiprequests.userRequester = ? "+
+                            "AND users.userId <> friendshiprequests.userRequested "+
+                "WHERE users.name LIKE ? AND users.userId <> ?"
+                let param = [idUserLogin, idUserLogin, '%' + name + '%', idUserLogin]
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         let users = []
@@ -322,7 +327,7 @@ class DAOUsers{
     getUserImage(id, callback){
         this.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(new Error("Error de conexión a la base de datos"))
+                callback(err)
             }else{
                 let sql = "SELECT image FROM users WHERE userId = ?"
                 let param = [id]
