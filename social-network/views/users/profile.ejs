@@ -19,9 +19,9 @@
       <img src="/user/image/<%= userInfo.userId %>" alt="user profile image" style="width:100%" />
       <h1> <%= userInfo.name %> </h1>
       <p class="bio"><%= userInfo.email %></p>
-      <i class="fa fa-age"> <%= userInfo.birthday %> </i>
-      <i class="fa fa-genre"> <%= userInfo.genre %> </i>
-      <i class="fa fa-score">200pts</i>
+      Fecha de nacimiento: <i class="fa fa-age"> <%= userInfo.birthday %> </i>
+      <i class="fa fa-genre"> Genero: <%= userInfo.genre %> </i>
+      <i class="fa fa-score">Puntuacion: XXXpts</i>
       <% if(modify){ %>
         <p><a class="button" href="/user/modify">Modificar</a></p>
       <% } %>

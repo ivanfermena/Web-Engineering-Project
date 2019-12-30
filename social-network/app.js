@@ -3,6 +3,7 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require("body-parser")
+const favicon = require('serve-favicon')
 
 const expressValidator = require("express-validator");
 
@@ -15,6 +16,8 @@ app.set("views", path.join(__dirname, "views"))
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(favicon(path.join(__dirname,'public','img','favicon.ico')));
 
 const session = require("express-session")
 const mysqlSession = require("express-mysql-session")

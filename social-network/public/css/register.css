@@ -15,8 +15,9 @@ main {
   height: 50%;
   width: 50%;
   padding: 2em;
-  border-radius: 2%;
+  border-radius: 1.5%;
   background-color: rgb(255, 255, 255, 0.8); 
+  border: solid gray 4px;
 }
 
 main form{

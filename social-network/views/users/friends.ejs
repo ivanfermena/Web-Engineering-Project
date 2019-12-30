@@ -40,20 +40,20 @@
     </div>
     <div class="panel" id="right_panel">
       <div class="sections" id="users_search">
-        <h2>Amigos</h2>
+        <h2>Buscar usuarios:</h2>
         <form action="/user/search/" method="POST">
           Buscar por nombre: <input type="text" name="name_search">
           <input type="submit" value="Buscar" class="button_control">
         </form>
 
         <div class="sections" id="users_list">
-            <h2>Busqueda de amigos</h2>
+            <h2>Amigos:</h2>
             <ul>
               <% friendsList.forEach(user => { %>
               <li>
                 <div class="friend">
                   <a href="/user/profile/<%= user.id %>" class="logo-friend">
-                    <img src="/user/image/<%= user.id %>" alt="user profile image"> <%= user.name %>
+                    <img src="/user/image/<%= user.id %>" alt="user profile image"> <%= user.name %> - <span class="email"><%= user.email %> </span>
                   </a>
                 </div>
               </li>

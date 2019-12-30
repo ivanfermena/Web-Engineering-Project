@@ -14,8 +14,9 @@ main {
     flex-direction: row;
     height: 50%;
     width: 50%;
-    border-radius: 2%;
+    border-radius: 1.5%;
     background-color: white;
+    border: solid gray 4px;
 }
 
 #form_panel {

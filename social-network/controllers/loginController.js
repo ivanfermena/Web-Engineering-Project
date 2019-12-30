@@ -11,12 +11,12 @@ const DaoUser = new daoUser(pool)
 
 function loadLoginPage(request, response) {
     response.status(200)
-    response.render("login/login", { errores: 0 })
+    response.render("login/login", { errores: undefined })
 }
 
 function loadRegisterPage(request, response) {
     response.status(200)
-    response.render("login/register", { errores: 0 });
+    response.render("login/register", { errores: undefined });
 }
 
 function isUserCorrect(request, response, next) {
