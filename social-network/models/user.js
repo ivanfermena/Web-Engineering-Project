@@ -40,8 +40,7 @@ class DAOUsers{
                 connection.query(sql, param, function (err, result) {
                     connection.release()
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }else if(result.affectedRows > 0){
                         callback(null, result.insertId)
                     }else{
@@ -57,7 +56,7 @@ class DAOUsers{
             if (err) {
                 callback(err)
             }else{
-
+                
                 let sql = "SELECT users.* FROM users JOIN friendshiprequests " +
                 "ON users.userId = friendshiprequests.userRequester " +
                 "WHERE friendshiprequests.userRequested = ?"
@@ -67,8 +66,7 @@ class DAOUsers{
                     connection.release()
 
                     if(err){
-                        console.log(err)
-                        callback(new Error("Error de acceso a la base de datos"))
+                        callback(err)
                     }
                     else{
                         let friendshipRequestsList = []
@@ -202,6 +200,10 @@ class DAOUsers{
             }else{
                 let sql = "UPDATE users SET"
                 let params = []
+                if(user.image !== undefined){
+                    sql = sql.concat(" image = ?,")
+                    params.push(user.image)
+                }
                 if(user.email !== undefined){
                     sql = sql.concat(" email = ?,")
                     params.push(user.email)
@@ -222,7 +224,7 @@ class DAOUsers{
                     sql = sql.concat(" birthday = ?,")
                     params.push(user.birthday)
                 }
-                //elimina la ultima coma
+                //elimina la ultima coma antes del where
                 sql = sql.slice(0, -1)
                 sql = sql.concat(" where userId = ?")
                 params.push(userId)

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 30-12-2019 a las 10:03:42
+-- Tiempo de generación: 31-12-2019 a las 12:12:57
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.3.11
 
@@ -47,6 +47,18 @@ CREATE TABLE `friendships` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `expires` int(11) UNSIGNED NOT NULL,
+  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `users`
 --
 
@@ -79,6 +91,12 @@ ALTER TABLE `friendships`
   ADD KEY `friendId` (`friendId`);
 
 --
+-- Indices de la tabla `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`session_id`);
+
+--
 -- Indices de la tabla `users`
 --
 ALTER TABLE `users`
@@ -92,7 +110,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas
@@ -102,15 +120,15 @@ ALTER TABLE `users`
 -- Filtros para la tabla `friendshiprequests`
 --
 ALTER TABLE `friendshiprequests`
-  ADD CONSTRAINT `friendshiprequests_ibfk_1` FOREIGN KEY (`userRequester`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `friendshiprequests_ibfk_2` FOREIGN KEY (`userRequested`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `friendshiprequests_ibfk_1` FOREIGN KEY (`userRequester`) REFERENCES `users` (`userId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `friendshiprequests_ibfk_2` FOREIGN KEY (`userRequested`) REFERENCES `users` (`userId`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `friendships`
 --
 ALTER TABLE `friendships`
-  ADD CONSTRAINT `friendships_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `friendships_ibfk_2` FOREIGN KEY (`friendId`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `friendships_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `friendships_ibfk_2` FOREIGN KEY (`friendId`) REFERENCES `users` (`userId`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

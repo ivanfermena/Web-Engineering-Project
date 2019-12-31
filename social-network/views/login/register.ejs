@@ -20,23 +20,23 @@
       <div id="main_panel">
         <form action="/login/register" method="POST" enctype="multipart/form-data">
           Email:* 
-          <%if (errores != undefined && errores.user_email) {%>
+          <%if (errores != null && errores.user_email) {%>
             <span class="err-field"> <%=errores.user_email.msg%></span>
           <% } %>
           <input type="text" name="user_email">
           Password:* 
-          <%if (errores != undefined && errores.user_password) {%>
+          <%if (errores != null && errores.user_password) {%>
             <span class="err-field"> <%=errores.user_password.msg%></span>
           <% } %>
           <input type="password" name="user_password">
           Nombre:* 
-          <%if (errores != undefined && errores.user_name) {%>
+          <%if (errores != null && errores.user_name) {%>
             <span class="err-field"> <%=errores.user_name.msg%></span>
           <% } %>
           <input type="text" name="user_name">
           <div id="form_genre">
             Sexo:*
-            <%if (errores != undefined && errores.user_genre) {%>
+            <%if (errores != null && errores.user_genre) {%>
               <span class="err-field"> <%=errores.user_genre.msg%></span>
             <% } %>
             <input type="radio" name="user_genre" value="hombre"> Hombre
@@ -44,7 +44,7 @@
             <input type="radio" name="user_genre" value="otro"> Otro
           </div>
           Fecha de nacimiento:* 
-          <%if (errores != undefined && errores.user_birthday) {%>
+          <%if (errores != null && errores.user_birthday) {%>
             <span class="err-field"> <%=errores.user_birthday.msg%></span>
           <% } %>
           <input type="date" name="user_birthday">

@@ -19,12 +19,12 @@
     <%- include("./../general/flash") %>
     <div id="main_panel">
       <form action="/user/modify" method="POST" enctype="multipart/form-data">
-        Email: <%if (errores != 0 && errores.user_email) {%>
+        Email: <%if (errores != null && errores.user_email) {%>
               <span class="err-field"> <%=errores.user_email.msg%></span>
               <% } %>
         <input type="text" name="user_email">
         Password: <input type="password" name="user_password">
-        Nombre completo: <%if (errores != 0 && errores.user_name) {%>
+        Nombre completo: <%if (errores != null && errores.user_name) {%>
                          <span class="err-field"> <%=errores.user_name.msg%></span>
                          <% } %>
         <input type="text" name="user_name">

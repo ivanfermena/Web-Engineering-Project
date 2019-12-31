@@ -19,9 +19,10 @@ function getUser(request, response, next) {
                 next(err)
             } else if (user) {
                 response.status(200)
+                //el atributo permite saber si el perfil se puede modificar
                 let currentUser = false
                 if (request.session.currentUser.id == userId) {
-                    request.session.currentUser.points = user.points
+                    //request.session.currentUser.points = user.points
                     currentUser = true
                 }
                 response.render("users/profile", {
@@ -160,7 +161,7 @@ function requestFriend(request, response, next) {
 
 function loadModifyPage(request, response, next) {
     response.status(200)
-    response.render("users/modify", { user: request.session.currentUser, errores: 0 })
+    response.render("users/modify", { user: request.session.currentUser, errores: null })
 }
 
 function modifyUser(request, response, next) {
@@ -198,7 +199,7 @@ function modifyUser(request, response, next) {
                 userRequested.name = request.body.user_name
                 modifiedFields += 1
             }
-            //es el unico que aparece como undefinded y no ''
+            //es el unico que aparece como undefined y no ''
             if (request.body.user_genre !== undefined) {
                 userRequested.genre = request.body.user_genre
                 modifiedFields += 1

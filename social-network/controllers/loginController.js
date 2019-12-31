@@ -11,12 +11,12 @@ const DaoUser = new daoUser(pool)
 
 function loadLoginPage(request, response) {
     response.status(200)
-    response.render("login/login", { errores: undefined })
+    response.render("login/login", { errores: null })
 }
 
 function loadRegisterPage(request, response) {
     response.status(200)
-    response.render("login/register", { errores: undefined });
+    response.render("login/register", { errores: null });
 }
 
 function isUserCorrect(request, response, next) {
@@ -37,21 +37,23 @@ function isUserCorrect(request, response, next) {
                 password: request.body.user_password
             }
 
-            DaoUser.isUserCorrect(userRequested.email, userRequested.password, function (err, userId) {
-                if (err) {
-                    next(err)
-                }
-                else if (userId == -1) {
-                    response.status(401)
-                    response.setFlash("Incorrect email or password")
-                    response.redirect("/login")
-                }
-                else {
-                    response.status(200)
-                    request.session.currentUser = { id: userId, points: 0 }
-                    response.redirect("/user/profile/" + userId)
-                }
-            })
+            DaoUser.isUserCorrect(userRequested.email, userRequested.password,
+                function (err, userId) {
+                    if (err) {
+                        next(err)
+                    }
+                    else if (userId == -1) {
+                        response.status(401)
+                        response.setFlash("Incorrect email or password")
+                        response.redirect("/login")
+                    }
+                    else {
+                        response.status(200)
+                        //points se añadiria aqui a 0
+                        request.session.currentUser = { id: userId }
+                        response.redirect("/user/profile/" + userId)
+                    }
+                })
         }
     })
 }
@@ -87,15 +89,16 @@ function newUser(request, response, next) {
                 userRequested.image = request.file.buffer
             }
 
-            DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name, 
+            DaoUser.newUser(userRequested.email, userRequested.password, userRequested.name,
                 userRequested.genre, userRequested.image, userRequested.birthday,
                 function (err, userId) {
                     if (err) {
                         next(err)
-                    } 
+                    }
                     else if (userId > 0) {
                         response.status(200)
-                        request.session.currentUser = { id: userId, points: 0 }
+                        //points se añadiria aqui a 0
+                        request.session.currentUser = { id: userId}
 
                         response.redirect('/user/profile/' + userId)
                     }
